@@ -1,0 +1,26 @@
+.widget-list {
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	background-color: #f5f5f5;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	max-width: 200px;
+}
+
+.widget-item {
+	padding: 10px;
+	margin: 5px 0;
+	background-color: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	cursor: pointer;
+	text-align: center;
+	font-size: 14px;
+	color: #333;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.widget-item:hover {
+	background-color: #e0e0e0;
+}
