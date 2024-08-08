@@ -1,0 +1,15 @@
+/* src/components/DraggableElement/DraggableElement.css */
+.draggable-element {
+	padding: 12px;
+	margin: 8px;
+	background-color: #ffffff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	cursor: grab;
+	text-align: center;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.draggable-element:active {
+	cursor: grabbing;
+}
