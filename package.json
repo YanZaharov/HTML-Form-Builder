@@ -19,8 +19,11 @@
     "@jsonforms/material-renderers": "^3.3.0",
     "@jsonforms/react": "^3.3.0",
     "@mui/material": "^5.16.6",
+    "file-saver": "^2.0.5",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
