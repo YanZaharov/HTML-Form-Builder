@@ -1,4 +1,4 @@
-import CssBaseline from '@mui/material/CssBaseline'
+import { CssBaseline } from '@mui/material'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useState } from 'react'
 import { DndProvider } from 'react-dnd'
@@ -29,7 +29,7 @@ function App() {
 					<FormEditor
 						formElements={formElements}
 						setFormElements={setFormElements}
-						setJsonCode={setJsonCode} // Для обновления JSON кода
+						setJsonCode={setJsonCode}
 					/>
 					<FormPreview formElements={formElements} />
 					<JSONEditor jsonCode={jsonCode} setJsonCode={setJsonCode} />

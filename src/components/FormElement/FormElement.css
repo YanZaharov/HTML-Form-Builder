@@ -1,0 +1,30 @@
+.form-editor-element {
+	background-color: #3e3e3e;
+	padding: 15px;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	position: relative;
+	cursor: move;
+}
+
+.form-editor-element label {
+	font-weight: bold;
+	margin-bottom: 10px;
+	display: block;
+	cursor: move;
+}
+
+.form-editor-element button {
+	margin-top: 10px;
+	padding: 4px 8px;
+	font-size: 0.875rem;
+	color: #fff;
+	background-color: #f44336;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.form-editor-element button:hover {
+	background-color: #d32f2f;
+}
