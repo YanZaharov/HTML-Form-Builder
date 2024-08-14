@@ -8,6 +8,7 @@ function FormPreview({ formElements }) {
 		type: 'object',
 		properties: formElements.reduce((acc, elem) => {
 			let type
+			let enumValues
 			switch (elem.type) {
 				case 'number':
 					type = 'number'
@@ -17,8 +18,12 @@ function FormPreview({ formElements }) {
 					break
 				case 'listbox':
 				case 'combobox':
+					type = 'string'
+					enumValues = ['Option 1', 'Option 2'] // Значения для listbox и combobox
+					break
 				case 'radiobuttons':
 					type = 'string'
+					enumValues = ['Option 1', 'Option 2'] // Значения для радио-кнопок
 					break
 				default:
 					type = 'string'
@@ -28,11 +33,7 @@ function FormPreview({ formElements }) {
 			acc[elem.id] = {
 				type,
 				title: elem.label,
-				...(elem.type === 'listbox' ||
-				elem.type === 'combobox' ||
-				elem.type === 'radiobuttons'
-					? { enum: ['Option 1', 'Option 2'] } // Добавляем enum для списка и радио-кнопок
-					: {}),
+				...(enumValues ? { enum: enumValues } : {}),
 			}
 			return acc
 		}, {}),
@@ -50,7 +51,10 @@ function FormPreview({ formElements }) {
 			// Настройка виджетов в зависимости от типа элемента
 			switch (elem.type) {
 				case 'number':
-					control = { ...control, options: { inputType: 'number' } }
+					control = {
+						...control,
+						options: { inputType: 'number', placeholder: 'Enter a number' },
+					}
 					break
 				case 'checkbox':
 					control = { ...control, options: { format: 'checkbox' } }
@@ -71,15 +75,30 @@ function FormPreview({ formElements }) {
 		}),
 	}
 
+	// Преобразуем значения из formElements для передачи в JSON Forms
+	const data = formElements.reduce((acc, elem) => {
+		let value
+		if (elem.type === 'number') {
+			value = elem.value !== undefined ? Number(elem.value) : undefined
+		} else if (elem.type === 'checkbox') {
+			value = elem.value || false
+		} else if (['listbox', 'combobox', 'radiobuttons'].includes(elem.type)) {
+			value = ['Option 1', 'Option 2'].includes(elem.value)
+				? elem.value
+				: 'Option 1' // Значение по умолчанию, если не совпадает с enum
+		} else {
+			value = elem.value || '' // Для остальных типов значения по умолчанию пустое
+		}
+		acc[elem.id] = value
+		return acc
+	}, {})
+
 	return (
 		<div className='form-preview'>
 			<JsonForms
 				schema={schema}
 				uischema={uischema}
-				data={formElements.reduce((acc, elem) => {
-					acc[elem.id] = elem.value || (elem.type === 'checkbox' ? false : '')
-					return acc
-				}, {})}
+				data={data}
 				renderers={materialRenderers}
 			/>
 		</div>
