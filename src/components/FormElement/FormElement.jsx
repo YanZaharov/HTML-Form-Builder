@@ -56,8 +56,8 @@ const FormElement = ({
 							handleElementChange(element.id, { value: e.target.value })
 						}
 					>
-						<option value='option1'>Option 1</option>
-						<option value='option2'>Option 2</option>
+						<option value='Option 1'>Option 1</option>
+						<option value='Option 2'>Option 2</option>
 					</select>
 				)
 			case 'combobox':
@@ -69,8 +69,8 @@ const FormElement = ({
 							handleElementChange(element.id, { value: e.target.value })
 						}
 					>
-						<option value='option1'>Option 1</option>
-						<option value='option2'>Option 2</option>
+						<option value='Option 1'>Option 1</option>
+						<option value='Option 2'>Option 2</option>
 					</select>
 				)
 			case 'radiobuttons':
@@ -80,8 +80,8 @@ const FormElement = ({
 							<input
 								type='radio'
 								id={`${element.id}_option1`}
-								value='option1'
-								checked={element.value === 'option1'}
+								value='Option 1'
+								checked={element.value === 'Option 1'}
 								onChange={e =>
 									handleElementChange(element.id, { value: e.target.value })
 								}
@@ -92,8 +92,8 @@ const FormElement = ({
 							<input
 								type='radio'
 								id={`${element.id}_option2`}
-								value='option2'
-								checked={element.value === 'option2'}
+								value='Option 2'
+								checked={element.value === 'Option 2'}
 								onChange={e =>
 									handleElementChange(element.id, { value: e.target.value })
 								}
