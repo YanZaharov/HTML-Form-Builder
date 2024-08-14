@@ -18,7 +18,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 
 	const handleDrop = item => {
 		const newElement = {
-			id: Date.now(),
+			id: Date.now().toString(), // Используем строку для уникального идентификатора
 			type: item.type,
 			label: item.label,
 			value: '',
@@ -37,7 +37,13 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 
 	const convertToJsonSchema = elements => {
 		const properties = elements.reduce((acc, el) => {
-			acc[el.id] = { type: 'string', title: el.label }
+			const type =
+				el.type === 'number'
+					? 'number'
+					: el.type === 'checkbox'
+					? 'boolean'
+					: 'string'
+			acc[el.id] = { type, title: el.label }
 			return acc
 		}, {})
 
@@ -48,10 +54,16 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 	}
 
 	const convertToUiSchema = elements => {
-		return elements.reduce((acc, el) => {
-			acc[el.id] = { 'ui:widget': el.type }
-			return acc
-		}, {})
+		return {
+			type: 'VerticalLayout',
+			elements: elements.map(el => ({
+				type: 'Control',
+				scope: `#/properties/${el.id}`,
+				options: {
+					format: el.type === 'checkbox' ? 'checkbox' : el.type,
+				},
+			})),
+		}
 	}
 
 	const handleElementChange = (id, newProps) => {
