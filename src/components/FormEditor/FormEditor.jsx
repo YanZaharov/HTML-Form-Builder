@@ -2,13 +2,10 @@ import { useDrop } from 'react-dnd'
 import FormElement from '../FormElement/FormElement'
 import './FormEditor.css'
 
-// Главный компонент редактора формы
 function FormEditor({ formElements, setFormElements, setJsonCode }) {
 	const [, drop] = useDrop({
 		accept: 'widget',
-		drop: item => {
-			handleDrop(item)
-		},
+		drop: item => handleDrop(item),
 	})
 
 	const moveElement = (fromIndex, toIndex) => {
@@ -32,8 +29,29 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 	}
 
 	const updateJsonCode = elements => {
-		const json = JSON.stringify(elements, null, 2)
+		const schema = convertToJsonSchema(elements)
+		const uiSchema = convertToUiSchema(elements)
+		const json = JSON.stringify({ schema, uischema: uiSchema }, null, 2)
 		setJsonCode(json)
+	}
+
+	const convertToJsonSchema = elements => {
+		const properties = elements.reduce((acc, el) => {
+			acc[el.id] = { type: 'string', title: el.label }
+			return acc
+		}, {})
+
+		return {
+			type: 'object',
+			properties,
+		}
+	}
+
+	const convertToUiSchema = elements => {
+		return elements.reduce((acc, el) => {
+			acc[el.id] = { 'ui:widget': el.type }
+			return acc
+		}, {})
 	}
 
 	const handleElementChange = (id, newProps) => {
