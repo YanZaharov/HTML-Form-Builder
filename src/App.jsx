@@ -1,5 +1,4 @@
-import { CssBaseline } from '@mui/material'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
 import { useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -18,7 +17,7 @@ const darkTheme = createTheme({
 
 function App() {
 	const [formElements, setFormElements] = useState([])
-	const [jsonCode, setJsonCode] = useState('{}') // Добавлено для динамического JSON
+	const [jsonCode, setJsonCode] = useState('{}')
 
 	return (
 		<ThemeProvider theme={darkTheme}>

@@ -1,54 +1,42 @@
+import { materialRenderers } from '@jsonforms/material-renderers'
+import { JsonForms } from '@jsonforms/react'
 import './FormPreview.css'
 
 function FormPreview({ formElements }) {
+	const schema = {
+		type: 'object',
+		properties: formElements.reduce((acc, elem) => {
+			acc[elem.id] = {
+				type: elem.type === 'number' ? 'number' : 'string',
+				title: elem.label,
+			}
+			return acc
+		}, {}),
+	}
+
+	const uischema = {
+		type: 'Group',
+		elements: formElements.map(elem => ({
+			type: 'Control',
+			scope: `#/properties/${elem.id}`,
+			options: {
+				label: elem.label,
+				...(elem.type === 'number' && { widget: 'number' }),
+			},
+		})),
+	}
+
 	return (
 		<div className='form-preview'>
-			{formElements.map(element => (
-				<div key={element.id} className='form-preview-element'>
-					<label>{element.label}</label>
-					{element.type === 'input' && (
-						<input type='text' value={element.value} readOnly />
-					)}
-					{element.type === 'number' && (
-						<input type='number' value={element.value} readOnly />
-					)}
-					{element.type === 'checkbox' && (
-						<input type='checkbox' checked={element.value} readOnly />
-					)}
-					{element.type === 'listbox' && (
-						<select value={element.value} readOnly>
-							<option value='option1'>Option 1</option>
-							<option value='option2'>Option 2</option>
-						</select>
-					)}
-					{element.type === 'combobox' && (
-						<select value={element.value} readOnly>
-							<option value='option1'>Option 1</option>
-							<option value='option2'>Option 2</option>
-						</select>
-					)}
-					{element.type === 'radiobuttons' && (
-						<>
-							<input
-								type='radio'
-								name={`radio-preview-${element.id}`}
-								value='option1'
-								checked={element.value === 'option1'}
-								readOnly
-							/>{' '}
-							Option 1
-							<input
-								type='radio'
-								name={`radio-preview-${element.id}`}
-								value='option2'
-								checked={element.value === 'option2'}
-								readOnly
-							/>{' '}
-							Option 2
-						</>
-					)}
-				</div>
-			))}
+			<JsonForms
+				schema={schema}
+				uischema={uischema}
+				data={formElements.reduce((acc, elem) => {
+					acc[elem.id] = elem.value
+					return acc
+				}, {})}
+				renderers={materialRenderers}
+			/>
 		</div>
 	)
 }

@@ -27,11 +27,16 @@ const FormElement = ({
 	return (
 		<div ref={node => drag(drop(node))} className='form-editor-element'>
 			<DragPreviewImage connect={preview} src='/path-to-drag-preview.png' />
-			<label style={{ marginBottom: '10px', display: 'block' }}>
+			<label
+				htmlFor={`element-${element.id}`}
+				style={{ marginBottom: '10px', display: 'block' }}
+			>
 				{element.label}
 			</label>
 			{element.type === 'input' && (
 				<input
+					id={`element-${element.id}`}
+					name={`element-${element.id}`}
 					type='text'
 					value={element.value}
 					onChange={e =>
@@ -41,6 +46,8 @@ const FormElement = ({
 			)}
 			{element.type === 'number' && (
 				<input
+					id={`element-${element.id}`}
+					name={`element-${element.id}`}
 					type='number'
 					value={element.value}
 					onChange={e =>
@@ -50,6 +57,8 @@ const FormElement = ({
 			)}
 			{element.type === 'checkbox' && (
 				<input
+					id={`element-${element.id}`}
+					name={`element-${element.id}`}
 					type='checkbox'
 					checked={element.value}
 					onChange={e =>
@@ -59,6 +68,8 @@ const FormElement = ({
 			)}
 			{element.type === 'listbox' && (
 				<select
+					id={`element-${element.id}`}
+					name={`element-${element.id}`}
 					value={element.value}
 					onChange={e =>
 						handleElementChange(element.id, { value: e.target.value })
@@ -70,6 +81,8 @@ const FormElement = ({
 			)}
 			{element.type === 'combobox' && (
 				<select
+					id={`element-${element.id}`}
+					name={`element-${element.id}`}
 					value={element.value}
 					onChange={e =>
 						handleElementChange(element.id, { value: e.target.value })
@@ -82,8 +95,9 @@ const FormElement = ({
 			{element.type === 'radiobuttons' && (
 				<>
 					<input
+						id={`element-${element.id}-option1`}
+						name={`element-${element.id}`}
 						type='radio'
-						name={`radio-${element.id}`}
 						value='option1'
 						checked={element.value === 'option1'}
 						onChange={e =>
@@ -92,8 +106,9 @@ const FormElement = ({
 					/>{' '}
 					Option 1
 					<input
+						id={`element-${element.id}-option2`}
+						name={`element-${element.id}`}
 						type='radio'
-						name={`radio-${element.id}`}
 						value='option2'
 						checked={element.value === 'option2'}
 						onChange={e =>
