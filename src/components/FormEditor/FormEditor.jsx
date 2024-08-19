@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 import { useCallback, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import FormElement from '../FormElement/FormElement'
@@ -80,7 +80,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 			setFormElements(updatedElements)
 			updateJsonCode(updatedElements)
 		}
-		setNewElementPosition(null) // Сброс позиции после дропа
+		setNewElementPosition(null)
 	}
 
 	const handleDragStart = index => {
@@ -100,18 +100,15 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		hover: (item, monitor) => {
 			const containerNode = containerRef.current
 			if (containerNode) {
-				const { top, bottom } = containerNode.getBoundingClientRect()
+				const { top } = containerNode.getBoundingClientRect()
 				const mouseY = monitor.getClientOffset().y
 
-				const itemHeight =
-					containerNode.clientHeight / (formElements.length + 1)
-				if (mouseY < top + itemHeight / 2) {
-					setNewElementPosition(0)
-				} else if (mouseY > bottom - itemHeight / 2) {
-					setNewElementPosition(formElements.length)
-				} else {
-					const index = Math.floor((mouseY - top) / itemHeight)
-					setNewElementPosition(index)
+				const itemHeight = 80 // Средняя высота элемента
+				const relativeY = mouseY - top
+				const newIndex = Math.floor(relativeY / itemHeight)
+
+				if (newIndex !== newElementPosition) {
+					setNewElementPosition(newIndex)
 				}
 			}
 		},
@@ -138,7 +135,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 				gap: 2,
 				overflowY: 'auto',
 				position: 'relative',
-				paddingBottom: '160px', // Space for new elements and dragging space
+				paddingBottom: '160px',
 			}}
 		>
 			{formElements.map((element, index) => (
@@ -147,52 +144,38 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 					element={element}
 					index={index}
 					moveElement={moveElement}
+					handleElementChange={(id, changes) =>
+						setFormElements(prevElements =>
+							prevElements.map(el =>
+								el.id === id ? { ...el, ...changes } : el
+							)
+						)
+					}
+					handleElementDelete={id =>
+						setFormElements(prevElements =>
+							prevElements.filter(el => el.id !== id)
+						)
+					}
 					onDragStart={() => handleDragStart(index)}
 					onDragEnd={handleDragEnd}
 					draggingIndex={draggingIndex}
 					highlighted={newElementPosition === index}
 				/>
 			))}
-			{newElementPosition !== null && (
+			{newElementPosition !== null && isOver && (
 				<Box
 					sx={{
-						position: 'absolute',
-						top: `${
-							(newElementPosition * containerRef.current.clientHeight) /
-							(formElements.length + 1)
-						}px`,
+						height: '80px',
+						border: '2px dashed',
+						borderColor: 'secondary.main',
+						backgroundColor: 'background.default',
+						position: 'absolute', // Сделаем позицию абсолютной для лучшего отображения
+						top: newElementPosition * 80, // Располагаем индикатор по месту
 						left: 0,
 						width: '100%',
-						height: '80px', // Use the height of a typical form element
-						backgroundColor: 'background.default',
-						border: '1px dashed',
-						borderColor: 'primary.main',
-						zIndex: 1,
-						pointerEvents: 'none',
-						transition: 'top 0.2s ease-out',
-						display: 'flex',
-						alignItems: 'center',
-						justifyContent: 'center',
-						opacity: 0.5,
+						transition: 'all 0.3s ease', // Плавный переход
 					}}
-				>
-					<Box
-						sx={{
-							width: '100%',
-							height: '100%',
-							border: '1px solid',
-							borderColor: 'primary.main',
-							backgroundColor: 'background.paper',
-							display: 'flex',
-							alignItems: 'center',
-							justifyContent: 'center',
-						}}
-					>
-						<Typography variant='body2' color='textSecondary'>
-							Drop here
-						</Typography>
-					</Box>
-				</Box>
+				/>
 			)}
 		</Box>
 	)

@@ -4,6 +4,34 @@ import { useState } from 'react'
 function FormActions({ formElements, setFormElements, setJsonCode }) {
 	const [fileInputKey, setFileInputKey] = useState(Date.now())
 
+	const convertToJsonSchema = elements => {
+		const properties = elements.reduce((acc, el) => {
+			const type =
+				el.type === 'number'
+					? 'number'
+					: el.type === 'checkbox'
+					? 'boolean'
+					: 'string'
+			acc[el.id] = { type, title: el.label }
+			return acc
+		}, {})
+		return {
+			type: 'object',
+			properties,
+		}
+	}
+
+	const convertToUiSchema = elements => ({
+		type: 'VerticalLayout',
+		elements: elements.map(el => ({
+			type: 'Control',
+			scope: `#/properties/${el.id}`,
+			options: {
+				format: el.type === 'checkbox' ? 'checkbox' : el.type,
+			},
+		})),
+	})
+
 	const handleSave = () => {
 		const schema = convertToJsonSchema(formElements)
 		const uischema = convertToUiSchema(formElements)
@@ -14,6 +42,7 @@ function FormActions({ formElements, setFormElements, setJsonCode }) {
 		a.href = url
 		a.download = 'form.json'
 		a.click()
+		URL.revokeObjectURL(url) // Отменяем URL после загрузки
 	}
 
 	const handleLoad = e => {

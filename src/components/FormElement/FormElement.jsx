@@ -31,8 +31,6 @@ const FormElement = ({
 	onDragEnd,
 	draggingIndex,
 	highlighted,
-	onHover,
-	onLeave,
 }) => {
 	const [value, setValue] = useState(element.value || '')
 	const ref = useRef(null)
@@ -58,7 +56,7 @@ const FormElement = ({
 	const handleChange = e => {
 		let newValue = e.target.value
 		if (element.type === 'checkbox') {
-			newValue = e.target.checked // Checkbox возвращает булево значение
+			newValue = e.target.checked
 		}
 		setValue(newValue)
 		handleElementChange(element.id, { value: newValue })
@@ -80,10 +78,7 @@ const FormElement = ({
 				return (
 					<FormControlLabel
 						control={
-							<Checkbox
-								checked={value === true} // Сравниваем с true для корректной работы
-								onChange={handleChange}
-							/>
+							<Checkbox checked={value === true} onChange={handleChange} />
 						}
 						label={element.label}
 					/>
@@ -134,7 +129,7 @@ const FormElement = ({
 			}}
 			sx={{
 				p: 2,
-				backgroundColor: 'background.paper',
+				backgroundColor: highlighted ? 'action.hover' : 'background.paper',
 				border: '1px solid',
 				borderColor: highlighted ? 'secondary.main' : 'divider',
 				borderRadius: 1,
@@ -145,11 +140,9 @@ const FormElement = ({
 				gap: 1,
 				cursor: 'move',
 				opacity: isDragging ? 0.5 : 1,
-				transition: 'all 0.2s ease',
-				marginBottom: draggingIndex === index ? '20px' : '10px', // Отступ между элементами
+				transition: 'all 0.3s ease', // Увеличили время перехода
+				marginBottom: '10px',
 			}}
-			onMouseEnter={onHover}
-			onMouseLeave={onLeave}
 		>
 			<Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
 				<DragIcon />
