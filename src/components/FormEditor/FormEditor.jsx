@@ -7,7 +7,7 @@ const ItemType = 'widget'
 
 function FormEditor({ formElements, setFormElements, setJsonCode }) {
 	const [draggingIndex, setDraggingIndex] = useState(null)
-	const [highlightedIndex, setHighlightedIndex] = useState(null) // Добавляем состояние для подсветки
+	const [highlightedIndex, setHighlightedIndex] = useState(null)
 	const containerRef = useRef(null)
 
 	const updateJsonCode = useCallback(
@@ -65,7 +65,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		const existingIndex = formElements.findIndex(el => el.id === item.id)
 
 		if (existingIndex !== -1) {
-			moveElement(existingIndex, formElements.length) // Переместите в конец
+			moveElement(existingIndex, formElements.length)
 		} else {
 			const newElement = {
 				id: Date.now().toString(),
@@ -99,7 +99,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 
 	const handleDragEnd = () => {
 		setDraggingIndex(null)
-		setHighlightedIndex(null) // Сброс подсветки после завершения перетаскивания
+		setHighlightedIndex(null)
 	}
 
 	const [{ isOver }, dropRef] = useDrop({
@@ -131,7 +131,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 				flexDirection: 'column',
 				gap: 2,
 				overflowY: 'auto',
-				paddingBottom: '100px', // Space for new elements
+				paddingBottom: '180px',
 			}}
 		>
 			{formElements.map((element, index) => (
@@ -145,9 +145,9 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 					onDragStart={() => handleDragStart(index)}
 					onDragEnd={handleDragEnd}
 					draggingIndex={draggingIndex}
-					highlighted={highlightedIndex === index} // Передаем состояние подсветки
-					onHover={() => setHighlightedIndex(index)} // Обновляем индекс подсвеченного элемента
-					onLeave={() => setHighlightedIndex(null)} // Сбрасываем индекс подсвеченного элемента
+					highlighted={highlightedIndex === index}
+					onHover={() => setHighlightedIndex(index)}
+					onLeave={() => setHighlightedIndex(null)}
 				/>
 			))}
 		</Box>

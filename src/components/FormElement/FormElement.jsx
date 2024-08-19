@@ -58,7 +58,7 @@ const FormElement = ({
 	const handleChange = e => {
 		let newValue = e.target.value
 		if (element.type === 'checkbox') {
-			newValue = e.target.checked // Checkbox возвращает булево значение
+			newValue = e.target.checked
 		}
 		setValue(newValue)
 		handleElementChange(element.id, { value: newValue })
@@ -80,10 +80,7 @@ const FormElement = ({
 				return (
 					<FormControlLabel
 						control={
-							<Checkbox
-								checked={value === true} // Сравниваем с true для корректной работы
-								onChange={handleChange}
-							/>
+							<Checkbox checked={value === true} onChange={handleChange} />
 						}
 						label={element.label}
 					/>

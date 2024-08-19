@@ -70,7 +70,7 @@ function FormActions({ formElements, setFormElements, setJsonCode }) {
 				})
 				setFormElements(elements)
 				setJsonCode(JSON.stringify({ schema, uischema }, null, 2))
-				setFileInputKey(Date.now()) // Reset file input for future uploads
+				setFileInputKey(Date.now())
 			}
 			reader.readAsText(file)
 		}
