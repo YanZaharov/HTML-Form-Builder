@@ -1,39 +1,24 @@
+import { Box } from '@mui/material'
+import { useCallback, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import FormElement from '../FormElement/FormElement'
-import './FormEditor.css'
+
+const ItemType = 'widget'
 
 function FormEditor({ formElements, setFormElements, setJsonCode }) {
-	const [, drop] = useDrop({
-		accept: 'widget',
-		drop: item => handleDrop(item),
-	})
+	const [draggingIndex, setDraggingIndex] = useState(null)
+	const [newElementPosition, setNewElementPosition] = useState(null)
+	const containerRef = useRef(null)
 
-	const moveElement = (fromIndex, toIndex) => {
-		const updatedElements = [...formElements]
-		const [movedElement] = updatedElements.splice(fromIndex, 1)
-		updatedElements.splice(toIndex, 0, movedElement)
-		setFormElements(updatedElements)
-		updateJsonCode(updatedElements)
-	}
-
-	const handleDrop = item => {
-		const newElement = {
-			id: Date.now().toString(), // Используем строку для уникального идентификатора
-			type: item.type,
-			label: item.label,
-			value: '',
-		}
-		const updatedElements = [...formElements, newElement]
-		setFormElements(updatedElements)
-		updateJsonCode(updatedElements)
-	}
-
-	const updateJsonCode = elements => {
-		const schema = convertToJsonSchema(elements)
-		const uiSchema = convertToUiSchema(elements)
-		const json = JSON.stringify({ schema, uischema: uiSchema }, null, 2)
-		setJsonCode(json)
-	}
+	const updateJsonCode = useCallback(
+		elements => {
+			const schema = convertToJsonSchema(elements)
+			const uiSchema = convertToUiSchema(elements)
+			const json = JSON.stringify({ schema, uischema: uiSchema }, null, 2)
+			setJsonCode(json)
+		},
+		[setJsonCode]
+	)
 
 	const convertToJsonSchema = elements => {
 		const properties = elements.reduce((acc, el) => {
@@ -46,53 +31,153 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 			acc[el.id] = { type, title: el.label }
 			return acc
 		}, {})
-
 		return {
 			type: 'object',
 			properties,
 		}
 	}
 
-	const convertToUiSchema = elements => {
-		return {
-			type: 'VerticalLayout',
-			elements: elements.map(el => ({
-				type: 'Control',
-				scope: `#/properties/${el.id}`,
-				options: {
-					format: el.type === 'checkbox' ? 'checkbox' : el.type,
-				},
-			})),
+	const convertToUiSchema = elements => ({
+		type: 'VerticalLayout',
+		elements: elements.map(el => ({
+			type: 'Control',
+			scope: `#/properties/${el.id}`,
+			options: {
+				format: el.type === 'checkbox' ? 'checkbox' : el.type,
+			},
+		})),
+	})
+
+	const moveElement = useCallback(
+		(fromIndex, toIndex) => {
+			if (fromIndex === toIndex) return
+
+			const updatedElements = [...formElements]
+			const [movedElement] = updatedElements.splice(fromIndex, 1)
+			updatedElements.splice(toIndex, 0, movedElement)
+			setFormElements(updatedElements)
+			updateJsonCode(updatedElements)
+		},
+		[formElements, setFormElements, updateJsonCode]
+	)
+
+	const handleDrop = item => {
+		const dropIndex =
+			newElementPosition !== null ? newElementPosition : formElements.length
+		const existingIndex = formElements.findIndex(el => el.id === item.id)
+
+		if (existingIndex !== -1) {
+			moveElement(existingIndex, dropIndex)
+		} else {
+			const newElement = {
+				id: Date.now().toString(),
+				type: item.type,
+				label: item.label,
+				value: '',
+			}
+			const updatedElements = [...formElements]
+			updatedElements.splice(dropIndex, 0, newElement)
+			setFormElements(updatedElements)
+			updateJsonCode(updatedElements)
 		}
+		setNewElementPosition(null)
 	}
 
-	const handleElementChange = (id, newProps) => {
-		const updatedElements = formElements.map(el =>
-			el.id === id ? { ...el, ...newProps } : el
-		)
-		setFormElements(updatedElements)
-		updateJsonCode(updatedElements)
+	const handleDragStart = index => {
+		setDraggingIndex(index)
 	}
 
-	const handleElementDelete = id => {
-		const updatedElements = formElements.filter(el => el.id !== id)
-		setFormElements(updatedElements)
-		updateJsonCode(updatedElements)
+	const handleDragEnd = () => {
+		setDraggingIndex(null)
+		setNewElementPosition(null)
 	}
+
+	const [{ isOver }, dropRef] = useDrop({
+		accept: ItemType,
+		drop: item => {
+			handleDrop(item)
+		},
+		hover: (item, monitor) => {
+			const containerNode = containerRef.current
+			if (containerNode) {
+				const { top } = containerNode.getBoundingClientRect()
+				const mouseY = monitor.getClientOffset().y
+
+				const itemHeight = 80 // Средняя высота элемента
+				const relativeY = mouseY - top
+				const newIndex = Math.floor(relativeY / itemHeight)
+
+				if (newIndex !== newElementPosition) {
+					setNewElementPosition(newIndex)
+				}
+			}
+		},
+		collect: monitor => ({
+			isOver: !!monitor.isOver(),
+		}),
+	})
 
 	return (
-		<div className='form-editor' ref={drop}>
+		<Box
+			ref={node => {
+				dropRef(node)
+				containerRef.current = node
+			}}
+			sx={{
+				p: 2,
+				backgroundColor: 'background.paper',
+				border: '2px dashed',
+				borderColor: isOver ? 'primary.main' : 'divider',
+				minHeight: '400px',
+				borderRadius: 2,
+				display: 'flex',
+				flexDirection: 'column',
+				gap: 2,
+				overflowY: 'auto',
+				position: 'relative',
+				paddingBottom: '160px',
+			}}
+		>
 			{formElements.map((element, index) => (
 				<FormElement
 					key={element.id}
 					element={element}
 					index={index}
 					moveElement={moveElement}
-					handleElementChange={handleElementChange}
-					handleElementDelete={handleElementDelete}
+					handleElementChange={(id, changes) =>
+						setFormElements(prevElements =>
+							prevElements.map(el =>
+								el.id === id ? { ...el, ...changes } : el
+							)
+						)
+					}
+					handleElementDelete={id =>
+						setFormElements(prevElements =>
+							prevElements.filter(el => el.id !== id)
+						)
+					}
+					onDragStart={() => handleDragStart(index)}
+					onDragEnd={handleDragEnd}
+					draggingIndex={draggingIndex}
+					highlighted={newElementPosition === index}
 				/>
 			))}
-		</div>
+			{newElementPosition !== null && isOver && (
+				<Box
+					sx={{
+						height: '80px',
+						border: '2px dashed',
+						borderColor: 'secondary.main',
+						backgroundColor: 'background.default',
+						position: 'absolute', // Сделаем позицию абсолютной для лучшего отображения
+						top: newElementPosition * 80, // Располагаем индикатор по месту
+						left: 0,
+						width: '100%',
+						transition: 'all 0.3s ease', // Плавный переход
+					}}
+				/>
+			)}
+		</Box>
 	)
 }
 
