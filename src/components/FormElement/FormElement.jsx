@@ -1,5 +1,25 @@
+import {
+	Delete as DeleteIcon,
+	DragIndicator as DragIcon,
+} from '@mui/icons-material'
+import {
+	Box,
+	Button,
+	Checkbox,
+	FormControl,
+	FormControlLabel,
+	InputLabel,
+	MenuItem,
+	Radio,
+	RadioGroup,
+	Select,
+	TextField,
+	Typography,
+} from '@mui/material'
+import { useRef, useState } from 'react'
 import { useDrag, useDrop } from 'react-dnd'
-import './FormElement.css'
+
+const ItemType = 'widget'
 
 const FormElement = ({
 	element,
@@ -7,14 +27,26 @@ const FormElement = ({
 	moveElement,
 	handleElementChange,
 	handleElementDelete,
+	onDragStart,
+	onDragEnd,
+	draggingIndex,
+	highlighted,
+	onHover,
+	onLeave,
 }) => {
-	const [, drag] = useDrag({
-		type: 'form-element',
-		item: { index },
+	const [value, setValue] = useState(element.value || '')
+	const ref = useRef(null)
+
+	const [{ isDragging }, drag] = useDrag({
+		type: ItemType,
+		item: { id: element.id, index },
+		collect: monitor => ({
+			isDragging: !!monitor.isDragging(),
+		}),
 	})
 
 	const [, drop] = useDrop({
-		accept: 'form-element',
+		accept: ItemType,
 		hover: draggedItem => {
 			if (draggedItem.index !== index) {
 				moveElement(draggedItem.index, index)
@@ -23,105 +55,117 @@ const FormElement = ({
 		},
 	})
 
-	const renderInputField = () => {
+	const handleChange = e => {
+		let newValue = e.target.value
+		if (element.type === 'checkbox') {
+			newValue = e.target.checked // Checkbox возвращает булево значение
+		}
+		setValue(newValue)
+		handleElementChange(element.id, { value: newValue })
+	}
+
+	const renderElement = () => {
 		switch (element.type) {
 			case 'number':
 				return (
-					<input
-						id={element.id}
+					<TextField
+						label={element.label}
 						type='number'
-						value={element.value || ''}
-						onChange={e =>
-							handleElementChange(element.id, { value: e.target.value })
-						}
+						value={value}
+						onChange={handleChange}
+						fullWidth
 					/>
 				)
 			case 'checkbox':
 				return (
-					<input
-						id={element.id}
-						type='checkbox'
-						checked={element.value || false}
-						onChange={e =>
-							handleElementChange(element.id, { value: e.target.checked })
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={value === true} // Сравниваем с true для корректной работы
+								onChange={handleChange}
+							/>
 						}
+						label={element.label}
 					/>
 				)
 			case 'listbox':
-				return (
-					<select
-						id={element.id}
-						value={element.value || ''}
-						onChange={e =>
-							handleElementChange(element.id, { value: e.target.value })
-						}
-					>
-						<option value='Option 1'>Option 1</option>
-						<option value='Option 2'>Option 2</option>
-					</select>
-				)
 			case 'combobox':
 				return (
-					<select
-						id={element.id}
-						value={element.value || ''}
-						onChange={e =>
-							handleElementChange(element.id, { value: e.target.value })
-						}
-					>
-						<option value='Option 1'>Option 1</option>
-						<option value='Option 2'>Option 2</option>
-					</select>
+					<FormControl fullWidth>
+						<InputLabel>{element.label}</InputLabel>
+						<Select value={value} onChange={handleChange}>
+							<MenuItem value='Option 1'>Option 1</MenuItem>
+							<MenuItem value='Option 2'>Option 2</MenuItem>
+						</Select>
+					</FormControl>
 				)
 			case 'radiobuttons':
 				return (
-					<div>
-						<label>
-							<input
-								type='radio'
-								id={`${element.id}_option1`}
-								value='Option 1'
-								checked={element.value === 'Option 1'}
-								onChange={e =>
-									handleElementChange(element.id, { value: e.target.value })
-								}
-							/>
-							Option 1
-						</label>
-						<label>
-							<input
-								type='radio'
-								id={`${element.id}_option2`}
-								value='Option 2'
-								checked={element.value === 'Option 2'}
-								onChange={e =>
-									handleElementChange(element.id, { value: e.target.value })
-								}
-							/>
-							Option 2
-						</label>
-					</div>
+					<RadioGroup value={value} onChange={handleChange}>
+						<FormControlLabel
+							value='Option 1'
+							control={<Radio />}
+							label='Option 1'
+						/>
+						<FormControlLabel
+							value='Option 2'
+							control={<Radio />}
+							label='Option 2'
+						/>
+					</RadioGroup>
 				)
 			default:
 				return (
-					<input
-						id={element.id}
-						type='text'
-						value={element.value || ''}
-						onChange={e =>
-							handleElementChange(element.id, { value: e.target.value })
-						}
+					<TextField
+						label={element.label}
+						value={value}
+						onChange={handleChange}
+						fullWidth
 					/>
 				)
 		}
 	}
 
 	return (
-		<div ref={node => drag(drop(node))} className='form-editor-element'>
-			<label htmlFor={element.id}>{element.label}</label>
-			{renderInputField()}
-			<button onClick={() => handleElementDelete(element.id)}>Delete</button>
-		</div>
+		<Box
+			ref={node => {
+				drag(drop(node))
+				ref.current = node
+			}}
+			sx={{
+				p: 2,
+				backgroundColor: 'background.paper',
+				border: '1px solid',
+				borderColor: highlighted ? 'secondary.main' : 'divider',
+				borderRadius: 1,
+				display: 'flex',
+				flexDirection: 'column',
+				alignItems: 'start',
+				justifyContent: 'space-between',
+				gap: 1,
+				cursor: 'move',
+				opacity: isDragging ? 0.5 : 1,
+				transition: 'all 0.2s ease',
+				marginBottom: draggingIndex === index ? '20px' : '0',
+			}}
+			onMouseEnter={onHover}
+			onMouseLeave={onLeave}
+		>
+			<Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+				<DragIcon />
+				<Typography variant='h6' sx={{ flex: 1 }}>
+					{element.label}
+				</Typography>
+				<Button
+					variant='outlined'
+					color='error'
+					onClick={() => handleElementDelete(element.id)}
+				>
+					<DeleteIcon />
+				</Button>
+			</Box>
+			{renderElement()}
+		</Box>
 	)
 }
 

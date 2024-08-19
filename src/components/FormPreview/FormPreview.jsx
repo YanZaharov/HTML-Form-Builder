@@ -3,7 +3,6 @@ import { JsonForms } from '@jsonforms/react'
 import './FormPreview.css'
 
 function FormPreview({ formElements }) {
-	// Создаем JSON Schema на основе элементов формы
 	const schema = {
 		type: 'object',
 		properties: formElements.reduce((acc, elem) => {
@@ -19,11 +18,11 @@ function FormPreview({ formElements }) {
 				case 'listbox':
 				case 'combobox':
 					type = 'string'
-					enumValues = ['Option 1', 'Option 2'] // Значения для listbox и combobox
+					enumValues = ['Option 1', 'Option 2']
 					break
 				case 'radiobuttons':
 					type = 'string'
-					enumValues = ['Option 1', 'Option 2'] // Значения для радио-кнопок
+					enumValues = ['Option 1', 'Option 2']
 					break
 				default:
 					type = 'string'
@@ -39,35 +38,62 @@ function FormPreview({ formElements }) {
 		}, {}),
 	}
 
-	// Создаем UI Schema с указанием нужных виджетов
 	const uischema = {
 		type: 'VerticalLayout',
 		elements: formElements.map(elem => {
 			let control = {
 				type: 'Control',
 				scope: `#/properties/${elem.id}`,
+				options: { readOnly: true },
 			}
 
-			// Настройка виджетов в зависимости от типа элемента
 			switch (elem.type) {
 				case 'number':
 					control = {
 						...control,
-						options: { inputType: 'number', placeholder: 'Enter a number' },
+						options: {
+							...control.options,
+							inputType: 'number',
+							placeholder: 'Enter a number',
+						},
 					}
 					break
 				case 'checkbox':
-					control = { ...control, options: { format: 'checkbox' } }
+					control = {
+						...control,
+						options: {
+							...control.options,
+							format: 'checkbox',
+						},
+					}
 					break
 				case 'listbox':
 				case 'combobox':
-					control = { ...control, options: { format: 'select' } }
+					control = {
+						...control,
+						options: {
+							...control.options,
+							format: 'select',
+						},
+					}
 					break
 				case 'radiobuttons':
-					control = { ...control, options: { format: 'radio' } }
+					control = {
+						...control,
+						options: {
+							...control.options,
+							format: 'radio',
+						},
+					}
 					break
 				default:
-					control = { ...control, options: { format: 'text' } }
+					control = {
+						...control,
+						options: {
+							...control.options,
+							format: 'text',
+						},
+					}
 					break
 			}
 
@@ -75,19 +101,18 @@ function FormPreview({ formElements }) {
 		}),
 	}
 
-	// Преобразуем значения из formElements для передачи в JSON Forms
 	const data = formElements.reduce((acc, elem) => {
 		let value
 		if (elem.type === 'number') {
 			value = elem.value !== undefined ? Number(elem.value) : undefined
 		} else if (elem.type === 'checkbox') {
-			value = elem.value || false
+			value = elem.value === true // Ensure value is boolean
 		} else if (['listbox', 'combobox', 'radiobuttons'].includes(elem.type)) {
 			value = ['Option 1', 'Option 2'].includes(elem.value)
 				? elem.value
-				: 'Option 1' // Значение по умолчанию, если не совпадает с enum
+				: 'Option 1'
 		} else {
-			value = elem.value || '' // Для остальных типов значения по умолчанию пустое
+			value = elem.value || ''
 		}
 		acc[elem.id] = value
 		return acc
