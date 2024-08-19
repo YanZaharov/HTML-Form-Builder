@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { useCallback, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import FormElement from '../FormElement/FormElement'
@@ -7,7 +7,7 @@ const ItemType = 'widget'
 
 function FormEditor({ formElements, setFormElements, setJsonCode }) {
 	const [draggingIndex, setDraggingIndex] = useState(null)
-	const [highlightedIndex, setHighlightedIndex] = useState(null)
+	const [newElementPosition, setNewElementPosition] = useState(null)
 	const containerRef = useRef(null)
 
 	const updateJsonCode = useCallback(
@@ -62,10 +62,12 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 	)
 
 	const handleDrop = item => {
+		const dropIndex =
+			newElementPosition !== null ? newElementPosition : formElements.length
 		const existingIndex = formElements.findIndex(el => el.id === item.id)
 
 		if (existingIndex !== -1) {
-			moveElement(existingIndex, formElements.length)
+			moveElement(existingIndex, dropIndex)
 		} else {
 			const newElement = {
 				id: Date.now().toString(),
@@ -73,24 +75,12 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 				label: item.label,
 				value: '',
 			}
-			const updatedElements = [...formElements, newElement]
+			const updatedElements = [...formElements]
+			updatedElements.splice(dropIndex, 0, newElement)
 			setFormElements(updatedElements)
 			updateJsonCode(updatedElements)
 		}
-	}
-
-	const handleElementChange = (id, newProps) => {
-		const updatedElements = formElements.map(el =>
-			el.id === id ? { ...el, ...newProps } : el
-		)
-		setFormElements(updatedElements)
-		updateJsonCode(updatedElements)
-	}
-
-	const handleElementDelete = id => {
-		const updatedElements = formElements.filter(el => el.id !== id)
-		setFormElements(updatedElements)
-		updateJsonCode(updatedElements)
+		setNewElementPosition(null) // Сброс позиции после дропа
 	}
 
 	const handleDragStart = index => {
@@ -99,14 +89,30 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 
 	const handleDragEnd = () => {
 		setDraggingIndex(null)
-		setHighlightedIndex(null)
+		setNewElementPosition(null)
 	}
 
 	const [{ isOver }, dropRef] = useDrop({
 		accept: ItemType,
-		drop: (item, monitor) => {
-			if (!monitor.didDrop()) {
-				handleDrop(item)
+		drop: item => {
+			handleDrop(item)
+		},
+		hover: (item, monitor) => {
+			const containerNode = containerRef.current
+			if (containerNode) {
+				const { top, bottom } = containerNode.getBoundingClientRect()
+				const mouseY = monitor.getClientOffset().y
+
+				const itemHeight =
+					containerNode.clientHeight / (formElements.length + 1)
+				if (mouseY < top + itemHeight / 2) {
+					setNewElementPosition(0)
+				} else if (mouseY > bottom - itemHeight / 2) {
+					setNewElementPosition(formElements.length)
+				} else {
+					const index = Math.floor((mouseY - top) / itemHeight)
+					setNewElementPosition(index)
+				}
 			}
 		},
 		collect: monitor => ({
@@ -131,7 +137,8 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 				flexDirection: 'column',
 				gap: 2,
 				overflowY: 'auto',
-				paddingBottom: '180px',
+				position: 'relative',
+				paddingBottom: '160px', // Space for new elements and dragging space
 			}}
 		>
 			{formElements.map((element, index) => (
@@ -140,16 +147,53 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 					element={element}
 					index={index}
 					moveElement={moveElement}
-					handleElementChange={handleElementChange}
-					handleElementDelete={handleElementDelete}
 					onDragStart={() => handleDragStart(index)}
 					onDragEnd={handleDragEnd}
 					draggingIndex={draggingIndex}
-					highlighted={highlightedIndex === index}
-					onHover={() => setHighlightedIndex(index)}
-					onLeave={() => setHighlightedIndex(null)}
+					highlighted={newElementPosition === index}
 				/>
 			))}
+			{newElementPosition !== null && (
+				<Box
+					sx={{
+						position: 'absolute',
+						top: `${
+							(newElementPosition * containerRef.current.clientHeight) /
+							(formElements.length + 1)
+						}px`,
+						left: 0,
+						width: '100%',
+						height: '80px', // Use the height of a typical form element
+						backgroundColor: 'background.default',
+						border: '1px dashed',
+						borderColor: 'primary.main',
+						zIndex: 1,
+						pointerEvents: 'none',
+						transition: 'top 0.2s ease-out',
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center',
+						opacity: 0.5,
+					}}
+				>
+					<Box
+						sx={{
+							width: '100%',
+							height: '100%',
+							border: '1px solid',
+							borderColor: 'primary.main',
+							backgroundColor: 'background.paper',
+							display: 'flex',
+							alignItems: 'center',
+							justifyContent: 'center',
+						}}
+					>
+						<Typography variant='body2' color='textSecondary'>
+							Drop here
+						</Typography>
+					</Box>
+				</Box>
+			)}
 		</Box>
 	)
 }

@@ -58,7 +58,7 @@ const FormElement = ({
 	const handleChange = e => {
 		let newValue = e.target.value
 		if (element.type === 'checkbox') {
-			newValue = e.target.checked
+			newValue = e.target.checked // Checkbox возвращает булево значение
 		}
 		setValue(newValue)
 		handleElementChange(element.id, { value: newValue })
@@ -80,7 +80,10 @@ const FormElement = ({
 				return (
 					<FormControlLabel
 						control={
-							<Checkbox checked={value === true} onChange={handleChange} />
+							<Checkbox
+								checked={value === true} // Сравниваем с true для корректной работы
+								onChange={handleChange}
+							/>
 						}
 						label={element.label}
 					/>
@@ -143,7 +146,7 @@ const FormElement = ({
 				cursor: 'move',
 				opacity: isDragging ? 0.5 : 1,
 				transition: 'all 0.2s ease',
-				marginBottom: draggingIndex === index ? '20px' : '0',
+				marginBottom: draggingIndex === index ? '20px' : '10px', // Отступ между элементами
 			}}
 			onMouseEnter={onHover}
 			onMouseLeave={onLeave}
