@@ -106,7 +106,15 @@ function FormActions({ formElements, setFormElements, setJsonCode }) {
 	}
 
 	return (
-		<Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+		<Box
+			sx={{
+				display: 'flex',
+				justifyContent: 'space-around',
+				mb: 1,
+				mt: 1,
+				gap: 155,
+			}}
+		>
 			<Button variant='contained' color='primary' onClick={handleSave}>
 				Save JSON
 			</Button>

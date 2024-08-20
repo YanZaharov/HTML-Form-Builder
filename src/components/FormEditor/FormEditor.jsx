@@ -92,7 +92,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		setNewElementPosition(null)
 	}
 
-	const [{ isOver }, dropRef] = useDrop({
+	const [{ isOver, canDrop }, dropRef] = useDrop({
 		accept: ItemType,
 		drop: item => {
 			handleDrop(item)
@@ -100,12 +100,25 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		hover: (item, monitor) => {
 			const containerNode = containerRef.current
 			if (containerNode) {
-				const { top } = containerNode.getBoundingClientRect()
+				const { top, bottom } = containerNode.getBoundingClientRect()
 				const mouseY = monitor.getClientOffset().y
+				const scrollY = window.scrollY || document.documentElement.scrollTop
 
-				const itemHeight = 80 // Средняя высота элемента
-				const relativeY = mouseY - top
-				const newIndex = Math.floor(relativeY / itemHeight)
+				const elementsHeights = formElements.map((_, index) => {
+					const elementNode = containerNode.children[index]
+					return elementNode ? elementNode.clientHeight : 0
+				})
+
+				let cumulativeHeight = top + scrollY
+				let newIndex = formElements.length
+
+				for (let i = 0; i < elementsHeights.length; i++) {
+					cumulativeHeight += elementsHeights[i] + 10 // Учитываем margin между элементами
+					if (mouseY < cumulativeHeight) {
+						newIndex = i
+						break
+					}
+				}
 
 				if (newIndex !== newElementPosition) {
 					setNewElementPosition(newIndex)
@@ -114,6 +127,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		},
 		collect: monitor => ({
 			isOver: !!monitor.isOver(),
+			canDrop: !!monitor.canDrop(),
 		}),
 	})
 
@@ -162,21 +176,6 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 					highlighted={newElementPosition === index}
 				/>
 			))}
-			{newElementPosition !== null && isOver && (
-				<Box
-					sx={{
-						height: '80px',
-						border: '2px dashed',
-						borderColor: 'secondary.main',
-						backgroundColor: 'background.default',
-						position: 'absolute', // Сделаем позицию абсолютной для лучшего отображения
-						top: newElementPosition * 80, // Располагаем индикатор по месту
-						left: 0,
-						width: '100%',
-						transition: 'all 0.3s ease', // Плавный переход
-					}}
-				/>
-			)}
 		</Box>
 	)
 }
