@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import './App.css'
-import FormActions from './components/FormActions/FormActions'
-import FormEditor from './components/FormEditor/FormEditor'
-import FormPreview from './components/FormPreview/FormPreview'
-import JSONEditor from './components/JSONEditor/JSONEditor'
-import WidgetList from './components/WidgetList/WidgetList'
+import FormActions from './components/FormActions'
+import FormEditor from './components/FormEditor'
+import FormPreview from './components/FormPreview'
+import JSONEditor from './components/JSONEditor'
+import WidgetList from './components/WidgetList'
 
 const darkTheme = createTheme({
 	palette: {
