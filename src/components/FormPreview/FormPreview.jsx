@@ -106,7 +106,7 @@ function FormPreview({ formElements }) {
 		if (elem.type === 'number') {
 			value = elem.value !== undefined ? Number(elem.value) : undefined
 		} else if (elem.type === 'checkbox') {
-			value = elem.value === true // Ensure value is boolean
+			value = elem.value === true
 		} else if (['listbox', 'combobox', 'radiobuttons'].includes(elem.type)) {
 			value = ['Option 1', 'Option 2'].includes(elem.value)
 				? elem.value
