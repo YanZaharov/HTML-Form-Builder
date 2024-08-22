@@ -6,30 +6,3 @@
 	padding: 10px;
 	box-sizing: border-box;
 }
-
-.widget-list {
-	overflow-y: auto;
-	border-right: 1px solid #4a4a4a;
-	background-color: #2e2e2e;
-}
-
-.form-editor {
-	background-color: #2e2e2e;
-	border: 1px dashed #4a4a4a;
-	padding: 10px;
-	overflow-y: auto;
-}
-
-.form-preview {
-	background-color: #2e2e2e;
-	border: 1px solid #4a4a4a;
-	padding: 10px;
-	overflow-y: auto;
-}
-
-.json-editor {
-	background-color: #2e2e2e;
-	border: 1px solid #4a4a4a;
-	padding: 10px;
-	overflow-y: auto;
-}

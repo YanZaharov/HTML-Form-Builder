@@ -1,6 +1,6 @@
 import { materialRenderers } from '@jsonforms/material-renderers'
 import { JsonForms } from '@jsonforms/react'
-import './FormPreview.css'
+import { Box } from '@mui/material'
 
 function FormPreview({ formElements }) {
 	const schema = {
@@ -119,14 +119,23 @@ function FormPreview({ formElements }) {
 	}, {})
 
 	return (
-		<div className='form-preview'>
+		<Box
+			sx={{
+				border: '1px solid #4a4a4a',
+				backgroundColor: '#1e1e1e',
+				padding: 2,
+				overflowY: 'auto',
+				borderRadius: 1,
+				height: '100%',
+			}}
+		>
 			<JsonForms
 				schema={schema}
 				uischema={uischema}
 				data={data}
 				renderers={materialRenderers}
 			/>
-		</div>
+		</Box>
 	)
 }
 

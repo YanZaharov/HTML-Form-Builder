@@ -1,5 +1,5 @@
+import { Box, Typography } from '@mui/material'
 import { useDrag } from 'react-dnd'
-import './WidgetList.css'
 
 const WidgetItem = ({ type, label }) => {
 	const [{ isDragging }, drag] = useDrag(() => ({
@@ -11,13 +11,19 @@ const WidgetItem = ({ type, label }) => {
 	}))
 
 	return (
-		<div
+		<Box
 			ref={drag}
-			className='widget-item'
-			style={{ opacity: isDragging ? 0.5 : 1 }}
+			sx={{
+				backgroundColor: '#3e3e3e',
+				border: '1px solid #4a4a4a',
+				padding: 2,
+				borderRadius: 1,
+				cursor: 'move',
+				opacity: isDragging ? 0.5 : 1,
+			}}
 		>
-			{label}
-		</div>
+			<Typography>{label}</Typography>
+		</Box>
 	)
 }
 
@@ -32,11 +38,23 @@ function WidgetList() {
 	]
 
 	return (
-		<div className='widget-list'>
+		<Box
+			sx={{
+				backgroundColor: '#2e2e2e',
+				border: '1px solid #4a4a4a',
+				borderRadius: 1,
+				padding: 2,
+				minHeight: '200px',
+				overflowY: 'auto',
+				display: 'flex',
+				flexDirection: 'column',
+				gap: 2,
+			}}
+		>
 			{widgets.map(widget => (
 				<WidgetItem key={widget.type} type={widget.type} label={widget.label} />
 			))}
-		</div>
+		</Box>
 	)
 }
 

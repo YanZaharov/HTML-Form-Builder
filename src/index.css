@@ -1,8 +1,8 @@
 body {
 	margin: 0;
 	font-family: Arial, sans-serif;
-	background-color: #121212; /* Фон страницы для темной темы */
-	color: #ffffff; /* Цвет текста по умолчанию */
+	background-color: #121212;
+	color: #ffffff;
 }
 
 #root {

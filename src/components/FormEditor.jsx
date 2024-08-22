@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { useCallback, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
-import FormElement from '../FormElement/FormElement'
+import FormElement from './FormElement'
 
 const ItemType = 'widget'
 
