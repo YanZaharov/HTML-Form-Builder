@@ -92,6 +92,12 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		setNewElementPosition(null)
 	}
 
+	const handleElementDelete = id => {
+		const updatedElements = formElements.filter(el => el.id !== id)
+		setFormElements(updatedElements)
+		updateJsonCode(updatedElements)
+	}
+
 	const [{ isOver, canDrop }, dropRef] = useDrop({
 		accept: ItemType,
 		drop: item => {
@@ -113,7 +119,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 				let newIndex = formElements.length
 
 				for (let i = 0; i < elementsHeights.length; i++) {
-					cumulativeHeight += elementsHeights[i] + 10 // Учитываем margin между элементами
+					cumulativeHeight += elementsHeights[i] + 10
 					if (mouseY < cumulativeHeight) {
 						newIndex = i
 						break
@@ -165,11 +171,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 							)
 						)
 					}
-					handleElementDelete={id =>
-						setFormElements(prevElements =>
-							prevElements.filter(el => el.id !== id)
-						)
-					}
+					handleElementDelete={handleElementDelete}
 					onDragStart={() => handleDragStart(index)}
 					onDragEnd={handleDragEnd}
 					draggingIndex={draggingIndex}

@@ -46,7 +46,7 @@ const FormElement = ({
 	const [, drop] = useDrop({
 		accept: ItemType,
 		hover: draggedItem => {
-			if (draggedItem.index !== index) {
+			if (draggedItem.index !== index && draggingIndex === draggedItem.index) {
 				moveElement(draggedItem.index, index)
 				draggedItem.index = index
 			}
@@ -128,7 +128,8 @@ const FormElement = ({
 				ref.current = node
 			}}
 			sx={{
-				p: 2,
+				p: 0.5,
+				fontSize: '0.875rem',
 				backgroundColor: highlighted ? 'action.hover' : 'background.paper',
 				border: '1px solid',
 				borderColor: highlighted ? 'secondary.main' : 'divider',
@@ -137,22 +138,25 @@ const FormElement = ({
 				flexDirection: 'column',
 				alignItems: 'start',
 				justifyContent: 'space-between',
-				gap: 1,
+				gap: 0.5,
 				cursor: 'move',
 				opacity: isDragging ? 0.5 : 1,
-				transition: 'all 0.3s ease', // Увеличили время перехода
-				marginBottom: '10px',
+				transition: 'all 0.3s ease',
+				marginBottom: '5px',
+				width: '100%',
+				maxWidth: '450px',
 			}}
 		>
 			<Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
 				<DragIcon />
-				<Typography variant='h6' sx={{ flex: 1 }}>
+				<Typography variant='h6' sx={{ flex: 1, fontSize: '1rem' }}>
 					{element.label}
 				</Typography>
 				<Button
 					variant='outlined'
 					color='error'
 					onClick={() => handleElementDelete(element.id)}
+					sx={{ minWidth: '32px', padding: '4px' }}
 				>
 					<DeleteIcon />
 				</Button>
