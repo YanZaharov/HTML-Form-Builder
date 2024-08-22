@@ -31,10 +31,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 			acc[el.id] = { type, title: el.label }
 			return acc
 		}, {})
-		return {
-			type: 'object',
-			properties,
-		}
+		return { type: 'object', properties }
 	}
 
 	const convertToUiSchema = elements => ({
@@ -42,9 +39,7 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		elements: elements.map(el => ({
 			type: 'Control',
 			scope: `#/properties/${el.id}`,
-			options: {
-				format: el.type === 'checkbox' ? 'checkbox' : el.type,
-			},
+			options: { format: el.type === 'checkbox' ? 'checkbox' : el.type },
 		})),
 	})
 
@@ -100,29 +95,29 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 
 	const [{ isOver, canDrop }, dropRef] = useDrop({
 		accept: ItemType,
-		drop: item => {
-			handleDrop(item)
-		},
+		drop: item => handleDrop(item),
 		hover: (item, monitor) => {
 			const containerNode = containerRef.current
 			if (containerNode) {
-				const { top, bottom } = containerNode.getBoundingClientRect()
+				const containerRect = containerNode.getBoundingClientRect()
 				const mouseY = monitor.getClientOffset().y
 				const scrollY = window.scrollY || document.documentElement.scrollTop
 
-				const elementsHeights = formElements.map((_, index) => {
-					const elementNode = containerNode.children[index]
-					return elementNode ? elementNode.clientHeight : 0
-				})
-
-				let cumulativeHeight = top + scrollY
+				let cumulativeHeight = containerRect.top + scrollY
 				let newIndex = formElements.length
 
-				for (let i = 0; i < elementsHeights.length; i++) {
-					cumulativeHeight += elementsHeights[i] + 10
-					if (mouseY < cumulativeHeight) {
-						newIndex = i
-						break
+				for (let i = 0; i < formElements.length; i++) {
+					const elementNode = containerNode.children[i]
+					if (elementNode) {
+						const elementRect = elementNode.getBoundingClientRect()
+						const elementHeight = elementRect.height
+						const elementTop = elementRect.top + scrollY
+
+						if (mouseY < elementTop + elementHeight / 2) {
+							newIndex = i
+							break
+						}
+						cumulativeHeight += elementHeight + 10
 					}
 				}
 
