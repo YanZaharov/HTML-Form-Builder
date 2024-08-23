@@ -142,7 +142,7 @@ const FormElement = ({
 				cursor: 'move',
 				opacity: isDragging ? 0.5 : 1,
 				transition: 'all 0.3s ease',
-				marginBottom: '5px',
+				marginBottom: '-10px',
 				width: '100%',
 				maxWidth: '450px',
 			}}

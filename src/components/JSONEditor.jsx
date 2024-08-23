@@ -9,7 +9,7 @@ function JSONEditor({ jsonCode, setJsonCode }) {
 		<Box
 			sx={{
 				width: '100%',
-				height: '100%',
+				height: '460px',
 				backgroundColor: '#2e2e2e',
 				color: '#fff',
 				border: '1px solid #4a4a4a',
