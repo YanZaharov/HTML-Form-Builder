@@ -126,7 +126,7 @@ function FormPreview({ formElements }) {
 				padding: 2,
 				overflowY: 'auto',
 				borderRadius: 1,
-				height: '100%',
+				height: '460px',
 			}}
 		>
 			<JsonForms

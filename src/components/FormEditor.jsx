@@ -143,14 +143,14 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 				backgroundColor: 'background.paper',
 				border: '2px dashed',
 				borderColor: isOver ? 'primary.main' : 'divider',
-				minHeight: '400px',
+				height: '460px',
 				borderRadius: 2,
 				display: 'flex',
 				flexDirection: 'column',
 				gap: 2,
 				overflowY: 'auto',
 				position: 'relative',
-				paddingBottom: '160px',
+				paddingBottom: '120px',
 			}}
 		>
 			{formElements.map((element, index) => (

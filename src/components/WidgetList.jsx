@@ -44,7 +44,7 @@ function WidgetList() {
 				border: '1px solid #4a4a4a',
 				borderRadius: 1,
 				padding: 2,
-				minHeight: '200px',
+				height: '460px',
 				overflowY: 'auto',
 				display: 'flex',
 				flexDirection: 'column',
