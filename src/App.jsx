@@ -123,7 +123,7 @@ function App() {
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
-								JSON Editor
+								JSON Schema
 							</Typography>{' '}
 							{/* Отступ снизу для лейбла */}
 							<Box
