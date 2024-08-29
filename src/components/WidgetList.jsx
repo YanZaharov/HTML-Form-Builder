@@ -35,6 +35,8 @@ function WidgetList() {
 		{ type: 'listbox', label: 'Listbox' },
 		{ type: 'combobox', label: 'Combobox' },
 		{ type: 'radiobuttons', label: 'Radio Buttons' },
+		{ type: 'verticalLayout', label: 'Vertical Layout' }, // Новый лейаут
+		{ type: 'horizontalLayout', label: 'Horizontal Layout' }, // Новый лейаут
 	]
 
 	return (

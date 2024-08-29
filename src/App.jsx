@@ -27,6 +27,15 @@ const darkTheme = createTheme({
 function App() {
 	const [formElements, setFormElements] = useState([])
 	const [jsonCode, setJsonCode] = useState('{}')
+	const [readOnly, setReadOnly] = useState(false)
+
+	const handleToggleReadOnly = () => {
+		setReadOnly(prev => !prev)
+	}
+
+	const handleFormElementsChange = newElements => {
+		setFormElements(newElements)
+	}
 
 	return (
 		<ThemeProvider theme={darkTheme}>
@@ -38,14 +47,16 @@ function App() {
 						flexDirection: 'column',
 						gap: 2,
 						padding: 2,
+						height: '100vh',
 					}}
 				>
 					{/* Верхний блок */}
 					<Box
 						sx={{
 							display: 'flex',
-							height: '75vh', // высота верхнего блока 75vh
+							flexDirection: 'row',
 							gap: 2,
+							flex: 1,
 						}}
 					>
 						{/* Виджет лист */}
@@ -53,19 +64,18 @@ function App() {
 							elevation={3}
 							sx={{
 								width: 300,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								Widget List
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(100vh - 150px)', // Обновленный подсчет высоты с учетом заголовка и отступов
 									overflowY: 'auto',
 								}}
 							>
@@ -78,25 +88,24 @@ function App() {
 							elevation={3}
 							sx={{
 								flex: 1,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								Form Editor
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(100vh - 150px)', // Обновленный подсчет высоты с учетом заголовка и отступов
 									overflowY: 'auto',
 								}}
 							>
 								<FormEditor
 									formElements={formElements}
-									setFormElements={setFormElements}
+									setFormElements={handleFormElementsChange}
 									setJsonCode={setJsonCode}
 								/>
 							</Box>
@@ -107,8 +116,9 @@ function App() {
 					<Box
 						sx={{
 							display: 'flex',
-							height: '75vh', // высота нижнего блока 75vh
+							flexDirection: 'row',
 							gap: 2,
+							flex: 1,
 						}}
 					>
 						{/* JSON Editor */}
@@ -116,19 +126,18 @@ function App() {
 							elevation={3}
 							sx={{
 								width: 300,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								JSON Schema
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(100vh - 150px)', // Обновленный подсчет высоты с учетом заголовка и отступов
 									overflowY: 'auto',
 								}}
 							>
@@ -141,23 +150,22 @@ function App() {
 							elevation={3}
 							sx={{
 								flex: 1,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								Form Preview
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(100vh - 150px)', // Обновленный подсчет высоты с учетом заголовка и отступов
 									overflowY: 'auto',
 								}}
 							>
-								<FormPreview formElements={formElements} />
+								<FormPreview formElements={formElements} readOnly={readOnly} />
 							</Box>
 						</Paper>
 					</Box>
@@ -172,8 +180,9 @@ function App() {
 					>
 						<FormActions
 							formElements={formElements}
-							setFormElements={setFormElements}
+							setFormElements={handleFormElementsChange}
 							setJsonCode={setJsonCode}
+							onToggleReadOnly={handleToggleReadOnly}
 						/>
 					</Box>
 				</Box>
