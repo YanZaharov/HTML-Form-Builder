@@ -1,6 +1,7 @@
 import {
 	Delete as DeleteIcon,
 	DragIndicator as DragIcon,
+	Edit as EditIcon,
 } from '@mui/icons-material'
 import {
 	Box,
@@ -8,6 +9,7 @@ import {
 	Checkbox,
 	FormControl,
 	FormControlLabel,
+	FormHelperText,
 	InputLabel,
 	MenuItem,
 	Radio,
@@ -31,6 +33,7 @@ const FormElement = ({
 	onDragEnd,
 	draggingIndex,
 	highlighted,
+	onOpenEditModal,
 }) => {
 	const [value, setValue] = useState(element.value || '')
 	const ref = useRef(null)
@@ -66,13 +69,46 @@ const FormElement = ({
 		switch (element.type) {
 			case 'number':
 				return (
-					<TextField
-						label={element.label}
-						type='number'
-						value={value}
-						onChange={handleChange}
-						fullWidth
-					/>
+					<>
+						<TextField
+							label={element.label}
+							type='number'
+							value={value}
+							onChange={handleChange}
+							fullWidth
+							inputProps={{
+								min: element.minValue || undefined,
+								max: element.maxValue || undefined,
+							}}
+						/>
+						{element.minValue && (
+							<FormHelperText>Min Value: {element.minValue}</FormHelperText>
+						)}
+						{element.maxValue && (
+							<FormHelperText>Max Value: {element.maxValue}</FormHelperText>
+						)}
+					</>
+				)
+			case 'text':
+				return (
+					<>
+						<TextField
+							label={element.label}
+							value={value}
+							onChange={handleChange}
+							fullWidth
+							inputProps={{
+								minLength: element.minLength || undefined,
+								maxLength: element.maxLength || undefined,
+							}}
+						/>
+						{element.minLength && (
+							<FormHelperText>Min Length: {element.minLength}</FormHelperText>
+						)}
+						{element.maxLength && (
+							<FormHelperText>Max Length: {element.maxLength}</FormHelperText>
+						)}
+					</>
 				)
 			case 'checkbox':
 				return (
@@ -89,25 +125,28 @@ const FormElement = ({
 					<FormControl fullWidth>
 						<InputLabel>{element.label}</InputLabel>
 						<Select value={value} onChange={handleChange}>
-							<MenuItem value='Option 1'>Option 1</MenuItem>
-							<MenuItem value='Option 2'>Option 2</MenuItem>
+							{element.options?.map((option, idx) => (
+								<MenuItem key={idx} value={option}>
+									{option}
+								</MenuItem>
+							))}
 						</Select>
 					</FormControl>
 				)
 			case 'radiobuttons':
 				return (
-					<RadioGroup value={value} onChange={handleChange}>
-						<FormControlLabel
-							value='Option 1'
-							control={<Radio />}
-							label='Option 1'
-						/>
-						<FormControlLabel
-							value='Option 2'
-							control={<Radio />}
-							label='Option 2'
-						/>
-					</RadioGroup>
+					<FormControl>
+						<RadioGroup value={value} onChange={handleChange}>
+							{element.options?.map((option, idx) => (
+								<FormControlLabel
+									key={idx}
+									value={option}
+									control={<Radio />}
+									label={option}
+								/>
+							))}
+						</RadioGroup>
+					</FormControl>
 				)
 			default:
 				return (
@@ -128,7 +167,7 @@ const FormElement = ({
 				ref.current = node
 			}}
 			sx={{
-				p: 0.5,
+				p: 1,
 				fontSize: '0.875rem',
 				backgroundColor: highlighted ? 'action.hover' : 'background.paper',
 				border: '1px solid',
@@ -138,20 +177,27 @@ const FormElement = ({
 				flexDirection: 'column',
 				alignItems: 'start',
 				justifyContent: 'space-between',
-				gap: 0.5,
+				gap: 1,
 				cursor: 'move',
 				opacity: isDragging ? 0.5 : 1,
 				transition: 'all 0.3s ease',
-				marginBottom: '-10px',
 				width: '100%',
 				maxWidth: '450px',
 			}}
 		>
 			<Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-				<DragIcon />
+				<DragIcon sx={{ marginRight: 1 }} />
 				<Typography variant='h6' sx={{ flex: 1, fontSize: '1rem' }}>
 					{element.label}
 				</Typography>
+				<Button
+					variant='outlined'
+					color='info'
+					onClick={() => onOpenEditModal(element)}
+					sx={{ minWidth: '32px', padding: '4px', marginRight: 1 }}
+				>
+					<EditIcon />
+				</Button>
 				<Button
 					variant='outlined'
 					color='error'

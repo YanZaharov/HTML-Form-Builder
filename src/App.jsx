@@ -13,6 +13,7 @@ import FormActions from './components/FormActions'
 import FormEditor from './components/FormEditor'
 import FormPreview from './components/FormPreview'
 import JSONEditor from './components/JSONEditor'
+import ModalFormEditor from './components/ModalFormEditor'
 import WidgetList from './components/WidgetList'
 
 const darkTheme = createTheme({
@@ -27,6 +28,27 @@ const darkTheme = createTheme({
 function App() {
 	const [formElements, setFormElements] = useState([])
 	const [jsonCode, setJsonCode] = useState('{}')
+	const [isModalOpen, setIsModalOpen] = useState(false)
+	const [selectedElement, setSelectedElement] = useState(null)
+
+	const handleOpenModal = element => {
+		setSelectedElement(element)
+		setIsModalOpen(true)
+	}
+
+	const handleCloseModal = () => {
+		setIsModalOpen(false)
+		setSelectedElement(null)
+	}
+
+	const handleSaveChanges = updatedElement => {
+		setFormElements(prevElements =>
+			prevElements.map(el =>
+				el.id === updatedElement.id ? updatedElement : el
+			)
+		)
+		handleCloseModal()
+	}
 
 	return (
 		<ThemeProvider theme={darkTheme}>
@@ -44,7 +66,7 @@ function App() {
 					<Box
 						sx={{
 							display: 'flex',
-							height: '75vh', // высота верхнего блока 75vh
+							height: '75vh',
 							gap: 2,
 						}}
 					>
@@ -53,19 +75,18 @@ function App() {
 							elevation={3}
 							sx={{
 								width: 300,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								Widget List
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(75vh - 16px)',
 									overflowY: 'auto',
 								}}
 							>
@@ -78,19 +99,18 @@ function App() {
 							elevation={3}
 							sx={{
 								flex: 1,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								Form Editor
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(75vh - 16px)',
 									overflowY: 'auto',
 								}}
 							>
@@ -98,6 +118,7 @@ function App() {
 									formElements={formElements}
 									setFormElements={setFormElements}
 									setJsonCode={setJsonCode}
+									handleOpenModal={handleOpenModal}
 								/>
 							</Box>
 						</Paper>
@@ -107,7 +128,7 @@ function App() {
 					<Box
 						sx={{
 							display: 'flex',
-							height: '75vh', // высота нижнего блока 75vh
+							height: '75vh',
 							gap: 2,
 						}}
 					>
@@ -116,19 +137,18 @@ function App() {
 							elevation={3}
 							sx={{
 								width: 300,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								JSON Schema
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(75vh - 16px)',
 									overflowY: 'auto',
 								}}
 							>
@@ -141,19 +161,18 @@ function App() {
 							elevation={3}
 							sx={{
 								flex: 1,
-								overflow: 'hidden', // убираем внешний скролл
+								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e', // немного светлее фон
+								backgroundColor: '#1e1e1e',
 							}}
 						>
 							<Typography variant='h6' sx={{ mb: 2 }}>
 								Form Preview
-							</Typography>{' '}
-							{/* Отступ снизу для лейбла */}
+							</Typography>
 							<Box
 								sx={{
-									maxHeight: 'calc(75vh - 16px)', // высота для внутреннего скролла
+									maxHeight: 'calc(75vh - 16px)',
 									overflowY: 'auto',
 								}}
 							>
@@ -176,6 +195,16 @@ function App() {
 							setJsonCode={setJsonCode}
 						/>
 					</Box>
+
+					{/* Модальное окно для редактирования элемента */}
+					{isModalOpen && (
+						<ModalFormEditor
+							isOpen={isModalOpen}
+							onClose={handleCloseModal}
+							widget={selectedElement}
+							onSave={handleSaveChanges}
+						/>
+					)}
 				</Box>
 			</DndProvider>
 		</ThemeProvider>
