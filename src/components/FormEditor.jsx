@@ -2,12 +2,15 @@ import { Box } from '@mui/material'
 import { useCallback, useRef, useState } from 'react'
 import { useDrop } from 'react-dnd'
 import FormElement from './FormElement'
+import ModalFormEditor from './ModalFormEditor'
 
 const ItemType = 'widget'
 
 function FormEditor({ formElements, setFormElements, setJsonCode }) {
 	const [draggingIndex, setDraggingIndex] = useState(null)
 	const [newElementPosition, setNewElementPosition] = useState(null)
+	const [selectedElement, setSelectedElement] = useState(null)
+	const [isModalOpen, setIsModalOpen] = useState(false)
 	const containerRef = useRef(null)
 
 	const updateJsonCode = useCallback(
@@ -28,7 +31,32 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 					: el.type === 'checkbox'
 					? 'boolean'
 					: 'string'
-			acc[el.id] = { type, title: el.label }
+			const elementSchema = { type, title: el.label }
+			if (el.options && el.options.length) {
+				elementSchema.enum = el.options
+			}
+			if (el.minLength) {
+				elementSchema.minLength = el.minLength
+			}
+			if (el.maxLength) {
+				elementSchema.maxLength = el.maxLength
+			}
+			if (el.pattern) {
+				elementSchema.pattern = el.pattern
+			}
+			if (el.minimum) {
+				elementSchema.minimum = el.minimum
+			}
+			if (el.maximum) {
+				elementSchema.maximum = el.maximum
+			}
+			if (el.multipleOf) {
+				elementSchema.multipleOf = el.multipleOf
+			}
+			if (el.required) {
+				elementSchema.required = true
+			}
+			acc[el.id] = elementSchema
 			return acc
 		}, {})
 		return { type: 'object', properties }
@@ -39,7 +67,16 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		elements: elements.map(el => ({
 			type: 'Control',
 			scope: `#/properties/${el.id}`,
-			options: { format: el.type === 'checkbox' ? 'checkbox' : el.type },
+			options: {
+				format: el.type === 'checkbox' ? 'checkbox' : el.type,
+				enum: el.options,
+				minLength: el.minLength,
+				maxLength: el.maxLength,
+				pattern: el.pattern,
+				minimum: el.minimum,
+				maximum: el.maximum,
+				multipleOf: el.multipleOf,
+			},
 		})),
 	})
 
@@ -68,7 +105,8 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 				id: Date.now().toString(),
 				type: item.type,
 				label: item.label,
-				value: '',
+				value: item.defaultValue || '', // Устанавливаем значение по умолчанию, если оно есть
+				...item, // Добавляем все свойства виджета
 			}
 			const updatedElements = [...formElements]
 			updatedElements.splice(dropIndex, 0, newElement)
@@ -91,6 +129,25 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 		const updatedElements = formElements.filter(el => el.id !== id)
 		setFormElements(updatedElements)
 		updateJsonCode(updatedElements)
+	}
+
+	const openModal = element => {
+		setSelectedElement(element)
+		setIsModalOpen(true)
+	}
+
+	const closeModal = () => {
+		setIsModalOpen(false)
+	}
+
+	const saveElement = data => {
+		setFormElements(prevElements =>
+			prevElements.map(el =>
+				el.id === selectedElement.id ? { ...el, ...data } : el
+			)
+		)
+		updateJsonCode(formElements)
+		closeModal()
 	}
 
 	const [{ isOver, canDrop }, dropRef] = useDrop({
@@ -171,8 +228,17 @@ function FormEditor({ formElements, setFormElements, setJsonCode }) {
 					onDragEnd={handleDragEnd}
 					draggingIndex={draggingIndex}
 					highlighted={newElementPosition === index}
+					onOpenEditModal={openModal}
 				/>
 			))}
+			{isModalOpen && selectedElement && (
+				<ModalFormEditor
+					isOpen={isModalOpen}
+					onClose={closeModal}
+					element={selectedElement}
+					onSave={saveElement}
+				/>
+			)}
 		</Box>
 	)
 }

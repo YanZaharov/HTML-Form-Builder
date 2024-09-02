@@ -1,8 +1,11 @@
 import { Box, Button, FormControl, Input, InputLabel } from '@mui/material'
 import { useState } from 'react'
+import ModalFormEditor from './ModalFormEditor' // Импортируем компонент для редактирования виджетов
 
 function FormActions({ formElements, setFormElements, setJsonCode }) {
 	const [fileInputKey, setFileInputKey] = useState(Date.now())
+	const [selectedElement, setSelectedElement] = useState(null)
+	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	const convertToJsonSchema = elements => {
 		const properties = elements.reduce((acc, el) => {
@@ -105,6 +108,34 @@ function FormActions({ formElements, setFormElements, setJsonCode }) {
 		}
 	}
 
+	const openModal = element => {
+		setSelectedElement(element)
+		setIsModalOpen(true)
+	}
+
+	const closeModal = () => {
+		setIsModalOpen(false)
+	}
+
+	const saveElement = data => {
+		setFormElements(prevElements =>
+			prevElements.map(el =>
+				el.id === selectedElement.id ? { ...el, ...data } : el
+			)
+		)
+		setJsonCode(
+			JSON.stringify(
+				{
+					schema: convertToJsonSchema(formElements),
+					uischema: convertToUiSchema(formElements),
+				},
+				null,
+				2
+			)
+		)
+		closeModal()
+	}
+
 	return (
 		<Box
 			sx={{
@@ -112,7 +143,7 @@ function FormActions({ formElements, setFormElements, setJsonCode }) {
 				justifyContent: 'space-around',
 				mb: 1,
 				mt: 1,
-				gap: 155,
+				gap: 2,
 			}}
 		>
 			<Button variant='contained' color='primary' onClick={handleSave}>
@@ -136,6 +167,14 @@ function FormActions({ formElements, setFormElements, setJsonCode }) {
 					</Button>
 				</label>
 			</FormControl>
+			{isModalOpen && (
+				<ModalFormEditor
+					isOpen={isModalOpen}
+					onClose={closeModal}
+					widget={selectedElement}
+					onSave={saveElement}
+				/>
+			)}
 		</Box>
 	)
 }

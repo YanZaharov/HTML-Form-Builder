@@ -3,11 +3,13 @@ import { JsonForms } from '@jsonforms/react'
 import { Box } from '@mui/material'
 
 function FormPreview({ formElements }) {
+	// Создаем схему для JSONForms
 	const schema = {
 		type: 'object',
 		properties: formElements.reduce((acc, elem) => {
-			let type
-			let enumValues
+			let type = 'string'
+			let enumValues = []
+
 			switch (elem.type) {
 				case 'number':
 					type = 'number'
@@ -18,11 +20,11 @@ function FormPreview({ formElements }) {
 				case 'listbox':
 				case 'combobox':
 					type = 'string'
-					enumValues = ['Option 1', 'Option 2']
+					enumValues = elem.enum || [] // Убедитесь, что enum определен
 					break
 				case 'radiobuttons':
 					type = 'string'
-					enumValues = ['Option 1', 'Option 2']
+					enumValues = elem.enum || [] // Убедитесь, что enum определен
 					break
 				default:
 					type = 'string'
@@ -32,19 +34,31 @@ function FormPreview({ formElements }) {
 			acc[elem.id] = {
 				type,
 				title: elem.label,
-				...(enumValues ? { enum: enumValues } : {}),
+				...(elem.required ? { default: '' } : {}),
+				...(enumValues.length ? { enum: enumValues } : {}),
+				...(elem.minLength ? { minLength: elem.minLength } : {}),
+				...(elem.maxLength ? { maxLength: elem.maxLength } : {}),
+				...(elem.pattern ? { pattern: elem.pattern } : {}),
+				...(elem.minimum ? { minimum: elem.minimum } : {}),
+				...(elem.maximum ? { maximum: elem.maximum } : {}),
+				...(elem.multipleOf ? { multipleOf: elem.multipleOf } : {}),
 			}
 			return acc
 		}, {}),
+		required: formElements.filter(elem => elem.required).map(elem => elem.id),
 	}
 
+	// Создаем UI схему для JSONForms
 	const uischema = {
 		type: 'VerticalLayout',
 		elements: formElements.map(elem => {
 			let control = {
 				type: 'Control',
 				scope: `#/properties/${elem.id}`,
-				options: { readOnly: true },
+				options: {
+					readOnly: true,
+					...(elem.required && { validation: { required: true } }),
+				},
 			}
 
 			switch (elem.type) {
@@ -55,6 +69,9 @@ function FormPreview({ formElements }) {
 							...control.options,
 							inputType: 'number',
 							placeholder: 'Enter a number',
+							...(elem.minimum && { minimum: elem.minimum }),
+							...(elem.maximum && { maximum: elem.maximum }),
+							...(elem.multipleOf && { multipleOf: elem.multipleOf }),
 						},
 					}
 					break
@@ -74,6 +91,7 @@ function FormPreview({ formElements }) {
 						options: {
 							...control.options,
 							format: 'select',
+							enum: elem.enum || [], // Убедитесь, что enum определен
 						},
 					}
 					break
@@ -83,6 +101,7 @@ function FormPreview({ formElements }) {
 						options: {
 							...control.options,
 							format: 'radio',
+							enum: elem.enum || [], // Убедитесь, что enum определен
 						},
 					}
 					break
@@ -92,6 +111,9 @@ function FormPreview({ formElements }) {
 						options: {
 							...control.options,
 							format: 'text',
+							...(elem.minLength && { minLength: elem.minLength }),
+							...(elem.maxLength && { maxLength: elem.maxLength }),
+							...(elem.pattern && { pattern: elem.pattern }),
 						},
 					}
 					break
@@ -101,6 +123,7 @@ function FormPreview({ formElements }) {
 		}),
 	}
 
+	// Создаем данные для JSONForms
 	const data = formElements.reduce((acc, elem) => {
 		let value
 		if (elem.type === 'number') {
@@ -108,9 +131,12 @@ function FormPreview({ formElements }) {
 		} else if (elem.type === 'checkbox') {
 			value = elem.value === true
 		} else if (['listbox', 'combobox', 'radiobuttons'].includes(elem.type)) {
-			value = ['Option 1', 'Option 2'].includes(elem.value)
-				? elem.value
-				: 'Option 1'
+			value =
+				elem.value !== undefined && elem.enum && elem.enum.includes(elem.value)
+					? elem.value
+					: elem.enum
+					? elem.enum[0] // Устанавливаем значение по умолчанию как первый элемент enum
+					: ''
 		} else {
 			value = elem.value || ''
 		}
@@ -134,6 +160,7 @@ function FormPreview({ formElements }) {
 				uischema={uischema}
 				data={data}
 				renderers={materialRenderers}
+				validationMode='validateOnChange'
 			/>
 		</Box>
 	)
