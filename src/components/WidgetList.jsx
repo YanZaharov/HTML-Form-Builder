@@ -29,7 +29,7 @@ const WidgetItem = ({ type, label }) => {
 
 function WidgetList() {
 	const widgets = [
-		{ type: 'input', label: 'Text Input' },
+		{ type: 'text', label: 'Text Input' },
 		{ type: 'number', label: 'Number Input' },
 		{ type: 'checkbox', label: 'Checkbox' },
 		{ type: 'listbox', label: 'Listbox' },
