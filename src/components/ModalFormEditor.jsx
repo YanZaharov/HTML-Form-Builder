@@ -78,7 +78,7 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 						: undefined
 					: undefined,
 			options:
-				element.type !== 'checkbox' && options.length ? options : undefined, // Удаление enum для Checkbox
+				element.type !== 'checkbox' && options.length ? options : undefined,
 		}
 		onSave(updatedElement)
 	}
