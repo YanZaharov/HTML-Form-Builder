@@ -27,7 +27,16 @@ const darkTheme = createTheme({
 
 function App() {
 	const [formElements, setFormElements] = useState([])
-	const [jsonCode, setJsonCode] = useState('{}')
+	const [jsonCode, setJsonCode] = useState(`{
+  "schema": {
+    "type": "object",
+    "properties": {}
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": []
+  }
+}`)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 	const [selectedElement, setSelectedElement] = useState(null)
 
