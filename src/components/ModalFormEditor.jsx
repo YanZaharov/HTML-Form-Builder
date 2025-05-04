@@ -1,4 +1,4 @@
-import DeleteIcon from '@mui/icons-material/Delete'
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
 	Button,
 	Checkbox,
@@ -11,43 +11,43 @@ import {
 	List,
 	ListItem,
 	ListItemText,
-	TextField,
-} from '@mui/material'
-import { useState } from 'react'
+	TextField
+} from '@mui/material';
+import {useState} from 'react';
 
 // Универсальный редактор для элементов формы
-const ModalFormEditor = ({ element, onSave, onClose }) => {
-	const [label, setLabel] = useState(element.label || '')
-	const [required, setRequired] = useState(element.required || false)
-	const [minLength, setMinLength] = useState(element.minLength || '')
-	const [maxLength, setMaxLength] = useState(element.maxLength || '')
-	const [minValue, setMinValue] = useState(element.minValue || '')
-	const [maxValue, setMaxValue] = useState(element.maxValue || '')
-	const [options, setOptions] = useState(element.options || [])
-	const [newOption, setNewOption] = useState('')
-	const [error, setError] = useState('')
+const ModalFormEditor = ({element, onSave, onClose}) => {
+	const [label, setLabel] = useState(element.label || '');
+	const [required, setRequired] = useState(element.required || false);
+	const [minLength, setMinLength] = useState(element.minLength || '');
+	const [maxLength, setMaxLength] = useState(element.maxLength || '');
+	const [minValue, setMinValue] = useState(element.minValue || '');
+	const [maxValue, setMaxValue] = useState(element.maxValue || '');
+	const [options, setOptions] = useState(element.options || []);
+	const [newOption, setNewOption] = useState('');
+	const [error, setError] = useState('');
 
 	const validate = () => {
 		if (!label) {
-			setError('Label is required.')
-			return false
+			setError('Label is required.');
+			return false;
 		}
 		if (
-			required &&
-			(element.type === 'text' || element.type === 'number') &&
-			!minLength &&
-			!maxLength &&
-			!minValue &&
-			!maxValue
+			required
+			&& (element.type === 'text' || element.type === 'number')
+			&& !minLength
+			&& !maxLength
+			&& !minValue
+			&& !maxValue
 		) {
-			setError('Min and Max values are required for required fields.')
-			return false
+			setError('Min and Max values are required for required fields.');
+			return false;
 		}
-		return true
-	}
+		return true;
+	};
 
 	const handleSave = () => {
-		if (!validate()) return
+		if (!validate()) { return; }
 
 		const updatedElement = {
 			...element,
@@ -78,21 +78,21 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 						: undefined
 					: undefined,
 			options:
-				element.type !== 'checkbox' && options.length ? options : undefined,
-		}
-		onSave(updatedElement)
-	}
+				element.type !== 'checkbox' && options.length ? options : undefined
+		};
+		onSave(updatedElement);
+	};
 
 	const handleAddOption = () => {
 		if (newOption.trim() !== '') {
-			setOptions([...options, newOption.trim()])
-			setNewOption('')
+			setOptions([...options, newOption.trim()]);
+			setNewOption('');
 		}
-	}
+	};
 
-	const handleDeleteOption = index => {
-		setOptions(options.filter((_, i) => i !== index))
-	}
+	const handleDeleteOption = (index) => {
+		setOptions(options.filter((_, i) => i !== index));
+	};
 
 	const renderTypeSpecificFields = () => {
 		switch (element.type) {
@@ -103,7 +103,7 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 							label='Minimum Length'
 							type='number'
 							value={minLength}
-							onChange={e => setMinLength(e.target.value)}
+							onChange={(e) => setMinLength(e.target.value)}
 							fullWidth
 							margin='normal'
 						/>
@@ -111,12 +111,12 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 							label='Maximum Length'
 							type='number'
 							value={maxLength}
-							onChange={e => setMaxLength(e.target.value)}
+							onChange={(e) => setMaxLength(e.target.value)}
 							fullWidth
 							margin='normal'
 						/>
 					</>
-				)
+				);
 			case 'number':
 				return (
 					<>
@@ -124,7 +124,7 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 							label='Minimum Value'
 							type='number'
 							value={minValue}
-							onChange={e => setMinValue(e.target.value)}
+							onChange={(e) => setMinValue(e.target.value)}
 							fullWidth
 							margin='normal'
 						/>
@@ -132,12 +132,12 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 							label='Maximum Value'
 							type='number'
 							value={maxValue}
-							onChange={e => setMaxValue(e.target.value)}
+							onChange={(e) => setMaxValue(e.target.value)}
 							fullWidth
 							margin='normal'
 						/>
 					</>
-				)
+				);
 			case 'combobox':
 			case 'listbox':
 			case 'radiobuttons': // Обновлено название типа
@@ -146,14 +146,14 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 						<TextField
 							label='New Option'
 							value={newOption}
-							onChange={e => setNewOption(e.target.value)}
+							onChange={(e) => setNewOption(e.target.value)}
 							fullWidth
 							margin='normal'
 						/>
 						<Button
 							variant='contained'
 							onClick={handleAddOption}
-							sx={{ mt: 2, mb: 2 }}
+							sx={{mt: 2, mb: 2}}
 							disabled={!newOption.trim()}
 						>
 							Add Option
@@ -177,23 +177,23 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 							))}
 						</List>
 					</>
-				)
+				);
 			case 'checkbox':
-				return null
+				return null;
 			default:
-				return null
+				return null;
 		}
-	}
+	};
 
 	return (
 		<Dialog open onClose={onClose}>
 			<DialogTitle>Edit {element.type} Element</DialogTitle>
 			<DialogContent>
-				{error && <p style={{ color: 'red' }}>{error}</p>}
+				{error && <p style={{color: 'red'}}>{error}</p>}
 				<TextField
 					label='Label'
 					value={label}
-					onChange={e => setLabel(e.target.value)}
+					onChange={(e) => setLabel(e.target.value)}
 					fullWidth
 					margin='normal'
 					error={!label && error.includes('Label')}
@@ -202,7 +202,7 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 					control={
 						<Checkbox
 							checked={required}
-							onChange={e => setRequired(e.target.checked)}
+							onChange={(e) => setRequired(e.target.checked)}
 						/>
 					}
 					label='Required'
@@ -214,7 +214,7 @@ const ModalFormEditor = ({ element, onSave, onClose }) => {
 				<Button onClick={handleSave}>Save</Button>
 			</DialogActions>
 		</Dialog>
-	)
-}
+	);
+};
 
-export default ModalFormEditor
+export default ModalFormEditor;

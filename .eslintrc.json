@@ -1,0 +1,292 @@
+{
+	"env": {
+		"browser": true,
+		"es2021": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"airbnb-base",
+		"plugin:react/recommended",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": 14,
+		"sourceType": "module"
+	},
+	"plugins": [
+		"react",
+		"@typescript-eslint"
+	],
+	"rules": {
+		"linebreak-style": ["error", "unix"],
+		"newline-per-chained-call": "off",
+		"import/no-extraneous-dependencies": "off",
+		"@typescript-eslint/no-this-alias": ["error", {
+			"allowDestructuring": true,
+			"allowedNames": ["me", "self"]
+		}],
+
+		"POSSIBLE ERRORS": ["off", "http://eslint.org/docs/rules/#possible-errors"],
+		"no-console": "off",
+		"no-constant-condition": "error",
+		"no-control-regex": "warn",
+		"no-inner-declarations": "warn",
+		"no-irregular-whitespace": [
+			"error",
+			{
+				"skipStrings": true,
+				"skipTemplates": true,
+				"skipRegExps": true,
+				"skipComments": true
+			}
+		],
+
+		"STRICT MODE": ["off", "http://eslint.org/docs/rules/#strict-mode"],
+		"strict": "off",
+
+		"VARIABLES": ["off", "http://eslint.org/docs/rules/#variables"],
+		"no-catch-shadow": "error",
+		"no-restricted-globals": [
+			"error",
+			{
+				"name": "event",
+				"message": "Use local parameter instead."
+			}
+		],
+		"no-unused-vars": ["error", {"args": "none"}],
+
+		"BEST PRACTICES": ["off", "http://eslint.org/docs/rules/#best-practices"],
+		"consistent-return": "warn",
+		"curly": ["error", "all"],
+		"default-case": "off",
+		"dot-notation": "warn",
+		"guard-for-in": "warn",
+		"no-empty-function": ["error", {"allow": ["arrowFunctions"]}],
+		"no-invalid-this": "off", 
+		"no-multi-spaces": [
+			"error",
+			{
+				"exceptions": {
+					"Property": true,
+					"VariableDeclarator": true
+				},
+				"ignoreEOLComments": false
+			}
+		],
+		"no-multi-str": "off",
+		"no-param-reassign": "off",
+		"no-restricted-properties": "off",
+		"no-unmodified-loop-condition": "error",
+		"no-useless-call": "error",
+		"no-warning-comments": "off",
+		"require-await": "error",
+		"vars-on-top": "off",
+		"wrap-iife": ["warn", "inside"],
+
+		"STYLISTIC ISSUES": ["off", "http://eslint.org/docs/rules/#stylistic-issues"],
+		"array-bracket-spacing": ["error", "never"],
+		"array-element-newline": "off",
+		"comma-dangle": ["error", "never"],
+		"consistent-this": ["error", "me"],
+		"func-names": "off",
+		"function-paren-newline": "off",
+		"implicit-arrow-linebreak": "off",
+		"indent": ["error", "tab", {"SwitchCase": 1}],
+		"key-spacing": ["error", {"mode": "minimum"}],
+		"max-len": ["error", 160, {"ignoreComments": true}],
+		"no-bitwise": "warn",
+		"no-continue": "off",
+		"no-mixed-operators": "error",
+		"no-nested-ternary": "off",
+		"no-plusplus": "off",
+		"no-restricted-syntax": "off",
+		"no-tabs": "off",
+		"no-unneeded-ternary": "error",
+		"nonblock-statement-body-position": ["error", "below"],
+		"object-curly-newline": ["error", {"ObjectExpression": {"minProperties": 3, "multiline": true, "consistent": true}}],
+		"object-curly-spacing": ["error", "never"],
+		"one-var": "off",
+		"one-var-declaration-per-line": "off",
+		"padded-blocks": "off",
+		"padding-line-between-statements": "off",
+		"quote-props": ["error", "as-needed"],
+		"spaced-comment": [
+			"error",
+			"always",
+			{
+				"line": {"exceptions": ["-"]},
+				"block": {"balanced": true}
+			}
+		],
+		"unicode-bom": ["warn", "never"],
+
+		"ECMAScript 6": ["off", "http://eslint.org/docs/rules/#ecmascript-6"],
+		"generator-star-spacing": ["error", "after"],
+		"no-confusing-arrow": "off",
+		"no-duplicate-imports": "warn",
+		"no-useless-constructor": "warn",
+		"no-useless-rename": "warn",
+		"object-shorthand": "off",
+		"prefer-arrow-callback": "off",
+		"prefer-destructuring": "off",
+		"prefer-numeric-literals": "off",
+		"prefer-rest-params": "off",
+		"prefer-spread": "off",
+		"prefer-object-spread": "off",
+		"prefer-template": "off",
+
+		"TO DO": ["off", "The rules to be enabled later"],
+		"no-undef": "off",
+		"eqeqeq": "off",
+
+		"no-unused-expressions": ["error", {"allowShortCircuit": true, "allowTernary": true}],
+
+		"prefer-const": "off",
+
+		"yoda": "off",
+
+		"quotes": ["error", "single", {"allowTemplateLiterals": true}],
+		"ignoreChainWithDepth": "off",
+
+		"no-underscore-dangle": [
+			"error",
+			{
+				"allow": [
+					"_ver",
+					"_T",
+					"_t",
+					"_defaults",
+					"_attrs",
+					"_proxy",
+					"_request",
+					"_rawRequest",
+					"_filters",
+					"_serialize",
+					"_params",
+					"_page",
+					"_start",
+					"__AVAIBLE_FONTS__",
+					"_childs",
+					"_nodes",
+					"_exclude_nodes",
+					"_styles",
+					"_class",
+					"_dc",
+					"_options",
+					"_containerId",
+					"_resetButton",
+					"_cultureInfo",
+					"_chart",
+					"_titleSortMode",
+					"_groups",
+					"__super__",
+					"_super",
+					"_enableTreeReSendMessage",
+					"_id",
+					"_data",
+					"_view",
+					"WDG_TYPES",
+					"_olClass",
+					"_code",
+					"ext_xpaths",
+					"_ranges",
+					"full_path",
+					"MRT_Localization_EN",
+					"MRT_Localization_RU"
+				]
+			}
+		],
+
+		"camelcase": [
+			"error",
+			{
+				"properties": "never",
+				"ignoreDestructuring": true,
+				"allow": [
+					"UNSAFE_componentWillMount",
+					"MRT_Localization_EN",
+					"MRT_Localization_RU",
+					"time_state",
+					"target_path",
+					"alert_id",
+					"event_id",
+					"full_path",
+					"new_comment",
+					"submit_success",
+					"alerts_paths",
+					"refresh_time",
+					"dt_period",
+					"dt_refresh_if_not_set",
+					"dt_is_changed",
+					"time_range",
+					"arr_ranges",
+					"dt_filter",
+					"display_name",
+					"dependent_conf_name",
+					"scheme_type",
+					"corp_id",
+					"obj_id",
+					"group_id",
+					"handler_id",
+					"field_id",
+					"validation_info",
+					"is_editable",
+					"is_reauired",
+					"version_val",
+					"version_lbl",
+					"input_type",
+					"err_dialog",
+					"err_msg",
+					"current_ranges",
+					"major_m"
+				]
+			}
+		],
+
+		"import/extensions": ["error", "ignorePackages", {
+			"js": "never",
+			"jsx": "never",
+			"ts": "never",
+			"tsx": "never"
+		}],
+
+		"lines-between-class-members": "off",
+
+		"react/react-in-jsx-scope": "off",
+		"react/prop-types": "warn"
+	},
+	"overrides": [
+		{
+			"files": ["*.json", "*.cfg.js", ".eslintignore", "ext-locale-ru.js"],
+			"rules": {
+				"no-unused-expressions": "off"
+			}
+		},
+		{
+			"files": ["*.ts", "*.tsx"],
+			"rules": {
+				"no-undef": "off"
+			}
+		},
+		{
+			"files": ["vite.config.js", "*.config.js"],
+			"rules": {
+				"import/no-extraneous-dependencies": "off"
+			}
+		}
+	],
+	"settings": {
+		"react": {
+			"version": "detect"
+		},
+		"import/resolver": {
+			"node": {
+				"extensions": [".js", ".jsx", ".ts", ".tsx"]
+			}
+		}
+	}
+}

@@ -1,8 +1,8 @@
 import {
 	Delete as DeleteIcon,
 	DragIndicator as DragIcon,
-	Edit as EditIcon,
-} from '@mui/icons-material'
+	Edit as EditIcon
+} from '@mui/icons-material';
 import {
 	Box,
 	Button,
@@ -16,12 +16,12 @@ import {
 	RadioGroup,
 	Select,
 	TextField,
-	Typography,
-} from '@mui/material'
-import { useRef, useState } from 'react'
-import { useDrag, useDrop } from 'react-dnd'
+	Typography
+} from '@mui/material';
+import {useRef, useState} from 'react';
+import {useDrag, useDrop} from 'react-dnd';
 
-const ItemType = 'widget'
+const ItemType = 'widget';
 
 const FormElement = ({
 	element,
@@ -29,41 +29,39 @@ const FormElement = ({
 	moveElement,
 	handleElementChange,
 	handleElementDelete,
-	onDragStart,
-	onDragEnd,
 	draggingIndex,
 	highlighted,
-	onOpenEditModal,
+	onOpenEditModal
 }) => {
-	const [value, setValue] = useState(element.value || '')
-	const ref = useRef(null)
+	const [value, setValue] = useState(element.value || '');
+	const ref = useRef(null);
 
-	const [{ isDragging }, drag] = useDrag({
+	const [{isDragging}, drag] = useDrag({
 		type: ItemType,
-		item: { id: element.id, index },
-		collect: monitor => ({
-			isDragging: !!monitor.isDragging(),
-		}),
-	})
+		item: {id: element.id, index},
+		collect: (monitor) => ({
+			isDragging: !!monitor.isDragging()
+		})
+	});
 
 	const [, drop] = useDrop({
 		accept: ItemType,
-		hover: draggedItem => {
+		hover: (draggedItem) => {
 			if (draggedItem.index !== index && draggingIndex === draggedItem.index) {
-				moveElement(draggedItem.index, index)
-				draggedItem.index = index
+				moveElement(draggedItem.index, index);
+				draggedItem.index = index;
 			}
-		},
-	})
-
-	const handleChange = e => {
-		let newValue = e.target.value
-		if (element.type === 'checkbox') {
-			newValue = e.target.checked
 		}
-		setValue(newValue)
-		handleElementChange(element.id, { value: newValue })
-	}
+	});
+
+	const handleChange = (e) => {
+		let newValue = e.target.value;
+		if (element.type === 'checkbox') {
+			newValue = e.target.checked;
+		}
+		setValue(newValue);
+		handleElementChange(element.id, {value: newValue});
+	};
 
 	const renderElement = () => {
 		switch (element.type) {
@@ -78,7 +76,7 @@ const FormElement = ({
 							fullWidth
 							inputProps={{
 								min: element.minValue || undefined,
-								max: element.maxValue || undefined,
+								max: element.maxValue || undefined
 							}}
 						/>
 						{element.minValue && (
@@ -88,7 +86,7 @@ const FormElement = ({
 							<FormHelperText>Max Value: {element.maxValue}</FormHelperText>
 						)}
 					</>
-				)
+				);
 			case 'text':
 				return (
 					<>
@@ -99,7 +97,7 @@ const FormElement = ({
 							fullWidth
 							inputProps={{
 								minLength: element.minLength || undefined,
-								maxLength: element.maxLength || undefined,
+								maxLength: element.maxLength || undefined
 							}}
 						/>
 						{element.minLength && (
@@ -109,7 +107,7 @@ const FormElement = ({
 							<FormHelperText>Max Length: {element.maxLength}</FormHelperText>
 						)}
 					</>
-				)
+				);
 			case 'checkbox':
 				return (
 					<FormControlLabel
@@ -118,7 +116,7 @@ const FormElement = ({
 						}
 						label={element.label}
 					/>
-				)
+				);
 			case 'listbox':
 			case 'combobox':
 				return (
@@ -132,7 +130,7 @@ const FormElement = ({
 							))}
 						</Select>
 					</FormControl>
-				)
+				);
 			case 'radiobuttons':
 				return (
 					<FormControl>
@@ -147,7 +145,7 @@ const FormElement = ({
 							))}
 						</RadioGroup>
 					</FormControl>
-				)
+				);
 			default:
 				return (
 					<TextField
@@ -156,15 +154,15 @@ const FormElement = ({
 						onChange={handleChange}
 						fullWidth
 					/>
-				)
+				);
 		}
-	}
+	};
 
 	return (
 		<Box
-			ref={node => {
-				drag(drop(node))
-				ref.current = node
+			ref={(node) => {
+				drag(drop(node));
+				ref.current = node;
 			}}
 			sx={{
 				p: 1,
@@ -182,19 +180,23 @@ const FormElement = ({
 				opacity: isDragging ? 0.5 : 1,
 				transition: 'all 0.3s ease',
 				width: '100%',
-				maxWidth: '450px',
+				maxWidth: '450px'
 			}}
 		>
-			<Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-				<DragIcon sx={{ marginRight: 1 }} />
-				<Typography variant='h6' sx={{ flex: 1, fontSize: '1rem' }}>
+			<Box sx={{
+				display: 'flex', alignItems: 'center', width: '100%'
+			}}>
+				<DragIcon sx={{marginRight: 1}} />
+				<Typography variant='h6' sx={{flex: 1, fontSize: '1rem'}}>
 					{element.label}
 				</Typography>
 				<Button
 					variant='outlined'
 					color='info'
 					onClick={() => onOpenEditModal(element)}
-					sx={{ minWidth: '32px', padding: '4px', marginRight: 1 }}
+					sx={{
+						minWidth: '32px', padding: '4px', marginRight: 1
+					}}
 				>
 					<EditIcon />
 				</Button>
@@ -202,14 +204,14 @@ const FormElement = ({
 					variant='outlined'
 					color='error'
 					onClick={() => handleElementDelete(element.id)}
-					sx={{ minWidth: '32px', padding: '4px' }}
+					sx={{minWidth: '32px', padding: '4px'}}
 				>
 					<DeleteIcon />
 				</Button>
 			</Box>
 			{renderElement()}
 		</Box>
-	)
-}
+	);
+};
 
-export default FormElement
+export default FormElement;

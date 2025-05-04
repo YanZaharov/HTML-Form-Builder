@@ -1,9 +1,9 @@
-import { Box, TextareaAutosize } from '@mui/material'
+import {Box, TextareaAutosize} from '@mui/material';
 
-function JSONEditor({ jsonCode, setJsonCode }) {
-	const handleJsonChange = e => {
-		setJsonCode(e.target.value)
-	}
+function JSONEditor({jsonCode, setJsonCode}) {
+	const handleJsonChange = (e) => {
+		setJsonCode(e.target.value);
+	};
 
 	return (
 		<Box
@@ -16,7 +16,7 @@ function JSONEditor({ jsonCode, setJsonCode }) {
 				borderRadius: 1,
 				padding: 2,
 				boxSizing: 'border-box',
-				overflow: 'auto',
+				overflow: 'auto'
 			}}
 		>
 			<TextareaAutosize
@@ -31,11 +31,11 @@ function JSONEditor({ jsonCode, setJsonCode }) {
 					resize: 'none',
 					fontFamily: 'monospace',
 					fontSize: '14px',
-					overflowY: 'auto',
+					overflowY: 'auto'
 				}}
 			/>
 		</Box>
-	)
+	);
 }
 
-export default JSONEditor
+export default JSONEditor;
