@@ -4,29 +4,29 @@ import {
 	CssBaseline,
 	Paper,
 	ThemeProvider,
-	Typography,
-} from '@mui/material'
-import { useState } from 'react'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import FormActions from './components/FormActions'
-import FormEditor from './components/FormEditor'
-import FormPreview from './components/FormPreview'
-import JSONEditor from './components/JSONEditor'
-import ModalFormEditor from './components/ModalFormEditor'
-import WidgetList from './components/WidgetList'
+	Typography
+} from '@mui/material';
+import {useState} from 'react';
+import {DndProvider} from 'react-dnd';
+import {HTML5Backend} from 'react-dnd-html5-backend';
+import FormActions from './components/FormActions';
+import FormEditor from './components/FormEditor';
+import FormPreview from './components/FormPreview';
+import JSONEditor from './components/JSONEditor';
+import ModalFormEditor from './components/ModalFormEditor';
+import WidgetList from './components/WidgetList';
 
 const darkTheme = createTheme({
 	palette: {
-		mode: 'dark',
+		mode: 'dark'
 	},
 	typography: {
-		fontFamily: 'Arial, sans-serif',
-	},
-})
+		fontFamily: 'Arial, sans-serif'
+	}
+});
 
 function App() {
-	const [formElements, setFormElements] = useState([])
+	const [formElements, setFormElements] = useState([]);
 	const [jsonCode, setJsonCode] = useState(`{
   "schema": {
     "type": "object",
@@ -36,28 +36,28 @@ function App() {
     "type": "VerticalLayout",
     "elements": []
   }
-}`)
-	const [isModalOpen, setIsModalOpen] = useState(false)
-	const [selectedElement, setSelectedElement] = useState(null)
+}`);
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedElement, setSelectedElement] = useState(null);
 
-	const handleOpenModal = element => {
-		setSelectedElement(element)
-		setIsModalOpen(true)
-	}
+	const handleOpenModal = (element) => {
+		setSelectedElement(element);
+		setIsModalOpen(true);
+	};
 
 	const handleCloseModal = () => {
-		setIsModalOpen(false)
-		setSelectedElement(null)
-	}
+		setIsModalOpen(false);
+		setSelectedElement(null);
+	};
 
-	const handleSaveChanges = updatedElement => {
-		setFormElements(prevElements =>
-			prevElements.map(el =>
+	const handleSaveChanges = (updatedElement) => {
+		setFormElements((prevElements) =>
+			prevElements.map((el) =>
 				el.id === updatedElement.id ? updatedElement : el
 			)
-		)
-		handleCloseModal()
-	}
+		);
+		handleCloseModal();
+	};
 
 	return (
 		<ThemeProvider theme={darkTheme}>
@@ -68,7 +68,7 @@ function App() {
 						display: 'flex',
 						flexDirection: 'column',
 						gap: 2,
-						padding: 2,
+						padding: 2
 					}}
 				>
 					{/* Верхний блок */}
@@ -76,7 +76,7 @@ function App() {
 						sx={{
 							display: 'flex',
 							height: '75vh',
-							gap: 2,
+							gap: 2
 						}}
 					>
 						{/* Виджет лист */}
@@ -87,16 +87,16 @@ function App() {
 								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e',
+								backgroundColor: '#1e1e1e'
 							}}
 						>
-							<Typography variant='h6' sx={{ mb: 2 }}>
+							<Typography variant='h6' sx={{mb: 2}}>
 								Widget List
 							</Typography>
 							<Box
 								sx={{
 									maxHeight: 'calc(75vh - 16px)',
-									overflowY: 'auto',
+									overflowY: 'auto'
 								}}
 							>
 								<WidgetList />
@@ -111,16 +111,16 @@ function App() {
 								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e',
+								backgroundColor: '#1e1e1e'
 							}}
 						>
-							<Typography variant='h6' sx={{ mb: 2 }}>
+							<Typography variant='h6' sx={{mb: 2}}>
 								Form Editor
 							</Typography>
 							<Box
 								sx={{
 									maxHeight: 'calc(75vh - 16px)',
-									overflowY: 'auto',
+									overflowY: 'auto'
 								}}
 							>
 								<FormEditor
@@ -138,7 +138,7 @@ function App() {
 						sx={{
 							display: 'flex',
 							height: '75vh',
-							gap: 2,
+							gap: 2
 						}}
 					>
 						{/* JSON Editor */}
@@ -149,16 +149,16 @@ function App() {
 								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e',
+								backgroundColor: '#1e1e1e'
 							}}
 						>
-							<Typography variant='h6' sx={{ mb: 2 }}>
+							<Typography variant='h6' sx={{mb: 2}}>
 								JSON Schema
 							</Typography>
 							<Box
 								sx={{
 									maxHeight: 'calc(75vh - 16px)',
-									overflowY: 'auto',
+									overflowY: 'auto'
 								}}
 							>
 								<JSONEditor jsonCode={jsonCode} setJsonCode={setJsonCode} />
@@ -173,16 +173,16 @@ function App() {
 								overflow: 'hidden',
 								padding: 2,
 								borderRadius: 2,
-								backgroundColor: '#1e1e1e',
+								backgroundColor: '#1e1e1e'
 							}}
 						>
-							<Typography variant='h6' sx={{ mb: 2 }}>
+							<Typography variant='h6' sx={{mb: 2}}>
 								Form Preview
 							</Typography>
 							<Box
 								sx={{
 									maxHeight: 'calc(75vh - 16px)',
-									overflowY: 'auto',
+									overflowY: 'auto'
 								}}
 							>
 								<FormPreview formElements={formElements} />
@@ -195,7 +195,7 @@ function App() {
 						sx={{
 							display: 'flex',
 							justifyContent: 'center',
-							mt: 2,
+							mt: 2
 						}}
 					>
 						<FormActions
@@ -217,7 +217,7 @@ function App() {
 				</Box>
 			</DndProvider>
 		</ThemeProvider>
-	)
+	);
 }
 
-export default App
+export default App;
